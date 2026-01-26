@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hackers\' Pub</string>
+
+    <!-- Navigation -->
+    <string name="nav_timeline">Timeline</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="nav_explore">Explore</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Auth -->
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="username">Username</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="sign_in_description">Enter your username to receive a verification code via email.</string>
+    <string name="verification_description">Enter the verification code sent to your email.</string>
+    <string name="send_code">Send Code</string>
+    <string name="verify">Verify</string>
+    <string name="account_not_found">Account not found</string>
+
+    <!-- Timeline -->
+    <string name="local_timeline">Local</string>
+    <string name="global_timeline">Global</string>
+    <string name="personal_timeline">Home</string>
+    <string name="no_posts">No posts yet</string>
+    <string name="load_more">Load more</string>
+    <string name="refresh">Refresh</string>
+
+    <!-- Compose -->
+    <string name="compose">Compose</string>
+    <string name="compose_hint">What\'s on your mind?</string>
+    <string name="post">Post</string>
+    <string name="cancel">Cancel</string>
+    <string name="visibility_public">Public</string>
+    <string name="visibility_unlisted">Unlisted</string>
+    <string name="visibility_followers">Followers only</string>
+
+    <!-- Notifications -->
+    <string name="notification_follow">followed you</string>
+    <string name="notification_mention">mentioned you</string>
+    <string name="notification_reply">replied to your post</string>
+    <string name="notification_quote">quoted your post</string>
+    <string name="notification_share">shared your post</string>
+    <string name="notification_react">reacted to your post</string>
+    <string name="no_notifications">No notifications</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search posts or users</string>
+    <string name="search_posts">Posts</string>
+    <string name="search_users">Users</string>
+    <string name="no_results">No results found</string>
+
+    <!-- Post -->
+    <string name="replies">Replies</string>
+    <string name="shares">Shares</string>
+    <string name="reactions">Reactions</string>
+    <string name="quotes">Quotes</string>
+    <string name="share">Share</string>
+    <string name="unshare">Unshare</string>
+    <string name="reply">Reply</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="cache_cleared">Cache cleared</string>
+
+    <!-- Errors -->
+    <string name="error_generic">Something went wrong</string>
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="retry">Retry</string>
+</resources>

@@ -1,0 +1,403 @@
+fragment ActorFields on Actor {
+    id
+    name
+    handle
+    avatarUrl
+}
+
+fragment MediaFields on PostMedium {
+    url
+    thumbnailUrl
+    alt
+    height
+    width
+}
+
+fragment EngagementStatsFields on PostEngagementStats {
+    replies
+    reactions
+    shares
+    quotes
+}
+
+fragment PostFields on Post {
+    __typename
+    id
+    name
+    published
+    summary
+    content
+    excerpt
+    url
+    viewerHasShared
+    actor {
+        ...ActorFields
+    }
+    media {
+        ...MediaFields
+    }
+    engagementStats {
+        ...EngagementStatsFields
+    }
+    mentions(first: 20) {
+        edges {
+            node {
+                handle
+            }
+        }
+    }
+}
+
+fragment SharedPostFields on Post {
+    __typename
+    id
+    name
+    published
+    summary
+    content
+    excerpt
+    url
+    viewerHasShared
+    actor {
+        ...ActorFields
+    }
+    media {
+        ...MediaFields
+    }
+    engagementStats {
+        ...EngagementStatsFields
+    }
+    mentions(first: 20) {
+        edges {
+            node {
+                handle
+            }
+        }
+    }
+}
+
+query PublicTimeline($after: String) {
+    publicTimeline(first: 20, after: $after) {
+        edges {
+            cursor
+            node {
+                ...PostFields
+                sharedPost {
+                    ...SharedPostFields
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}
+
+query LocalTimeline($after: String) {
+    publicTimeline(local: true, first: 20, after: $after) {
+        edges {
+            cursor
+            node {
+                ...PostFields
+                sharedPost {
+                    ...SharedPostFields
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}
+
+query PersonalTimeline($after: String) {
+    personalTimeline(first: 20, after: $after) {
+        edges {
+            cursor
+            node {
+                ...PostFields
+                sharedPost {
+                    ...SharedPostFields
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}
+
+query Viewer {
+    viewer {
+        id
+        username
+        name
+        bio
+        avatarUrl
+        handle
+    }
+}
+
+query Notifications($after: String) {
+    viewer {
+        id
+        notifications(first: 20, after: $after) {
+            edges {
+                cursor
+                node {
+                    __typename
+                    id
+                    uuid
+                    created
+                    actors(first: 5) {
+                        edges {
+                            node {
+                                ...ActorFields
+                            }
+                        }
+                    }
+                    ... on FollowNotification {
+                        id
+                    }
+                    ... on MentionNotification {
+                        post {
+                            ...PostFields
+                        }
+                    }
+                    ... on ReplyNotification {
+                        post {
+                            ...PostFields
+                        }
+                    }
+                    ... on QuoteNotification {
+                        post {
+                            ...PostFields
+                        }
+                    }
+                    ... on ReactNotification {
+                        emoji
+                        customEmoji {
+                            id
+                            name
+                            imageUrl
+                        }
+                        post {
+                            ...PostFields
+                        }
+                    }
+                    ... on ShareNotification {
+                        post {
+                            ...PostFields
+                        }
+                    }
+                }
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+        }
+    }
+}
+
+query SearchPost($query: String!) {
+    searchPost(query: $query) {
+        edges {
+            node {
+                ...PostFields
+                sharedPost {
+                    ...SharedPostFields
+                }
+            }
+        }
+    }
+}
+
+query SearchObject($query: String!) {
+    searchObject(query: $query) {
+        ... on SearchedObject {
+            url
+        }
+        ... on EmptySearchQueryError {
+            message
+        }
+    }
+}
+
+query ActorByHandle($handle: String!, $after: String) {
+    actorByHandle(handle: $handle, allowLocalHandle: true) {
+        id
+        handle
+        name
+        bio
+        avatarUrl
+        posts(first: 20, after: $after) {
+            edges {
+                cursor
+                node {
+                    ...PostFields
+                    sharedPost {
+                        ...SharedPostFields
+                    }
+                }
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+        }
+    }
+}
+
+query PostDetail($id: ID!, $repliesAfter: String) {
+    node(id: $id) {
+        ... on Post {
+            ...PostFields
+            visibility
+            replyTarget {
+                ...PostFields
+            }
+            sharedPost {
+                ...SharedPostFields
+            }
+            reactionGroups {
+                __typename
+                ... on EmojiReactionGroup {
+                    emoji
+                    reactors(first: 20) {
+                        edges {
+                            node {
+                                ...ActorFields
+                            }
+                        }
+                        totalCount
+                    }
+                }
+                ... on CustomEmojiReactionGroup {
+                    customEmoji {
+                        id
+                        name
+                        imageUrl
+                    }
+                    reactors(first: 20) {
+                        edges {
+                            node {
+                                ...ActorFields
+                            }
+                        }
+                        totalCount
+                    }
+                }
+            }
+            replies(first: 20, after: $repliesAfter) {
+                edges {
+                    cursor
+                    node {
+                        ...PostFields
+                        sharedPost {
+                            ...SharedPostFields
+                        }
+                    }
+                }
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+            }
+        }
+    }
+}
+
+mutation LoginByUsername($username: String!, $locale: Locale!, $verifyUrl: URITemplate!) {
+    loginByUsername(username: $username, locale: $locale, verifyUrl: $verifyUrl) {
+        ... on LoginChallenge {
+            token
+        }
+        ... on AccountNotFoundError {
+            query
+        }
+    }
+}
+
+mutation CompleteLoginChallenge($token: UUID!, $code: String!) {
+    completeLoginChallenge(token: $token, code: $code) {
+        id
+        account {
+            id
+            username
+            name
+            avatarUrl
+            handle
+        }
+    }
+}
+
+mutation CreateNote($content: Markdown!, $language: Locale!, $visibility: PostVisibility!, $replyTargetId: ID) {
+    createNote(input: { content: $content, language: $language, visibility: $visibility, replyTargetId: $replyTargetId }) {
+        ... on CreateNotePayload {
+            note {
+                id
+                content
+                published
+            }
+        }
+        ... on InvalidInputError {
+            inputPath
+        }
+        ... on NotAuthenticatedError {
+            notAuthenticated
+        }
+    }
+}
+
+mutation RevokeSession($sessionId: UUID!) {
+    revokeSession(sessionId: $sessionId) {
+        id
+    }
+}
+
+mutation SharePost($postId: ID!) {
+    sharePost(input: { postId: $postId }) {
+        ... on SharePostPayload {
+            originalPost {
+                id
+                viewerHasShared
+                engagementStats {
+                    ...EngagementStatsFields
+                }
+            }
+            share {
+                id
+            }
+        }
+        ... on InvalidInputError {
+            inputPath
+        }
+        ... on NotAuthenticatedError {
+            notAuthenticated
+        }
+    }
+}
+
+mutation UnsharePost($postId: ID!) {
+    unsharePost(input: { postId: $postId }) {
+        ... on UnsharePostPayload {
+            originalPost {
+                id
+                viewerHasShared
+                engagementStats {
+                    ...EngagementStatsFields
+                }
+            }
+        }
+        ... on InvalidInputError {
+            inputPath
+        }
+        ... on NotAuthenticatedError {
+            notAuthenticated
+        }
+    }
+}
