@@ -39,6 +39,7 @@ import pub.hackers.android.ui.components.PostCard
 fun ExploreScreen(
     onPostClick: (String) -> Unit,
     onProfileClick: (String) -> Unit,
+    onReplyClick: (String) -> Unit,
     onSignInClick: () -> Unit,
     isLoggedIn: Boolean,
     viewModel: ExploreViewModel = hiltViewModel()
@@ -134,6 +135,9 @@ fun ExploreScreen(
                                         post = post,
                                         onClick = { onPostClick(post.sharedPost?.id ?: post.id) },
                                         onProfileClick = onProfileClick,
+                                        onReplyClick = if (isLoggedIn) {
+                                            { onReplyClick(post.sharedPost?.id ?: post.id) }
+                                        } else null,
                                         onShareClick = if (isLoggedIn) {
                                             {
                                                 if (post.viewerHasShared) {

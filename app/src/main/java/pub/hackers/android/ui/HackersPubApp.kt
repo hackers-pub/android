@@ -168,8 +168,8 @@ fun HackersPubApp(
                     onProfileClick = { handle ->
                         navController.navigate(DetailScreen.Profile.createRoute(handle))
                     },
-                    onComposeClick = {
-                        navController.navigate(DetailScreen.Compose.createRoute())
+                    onComposeClick = { replyTo ->
+                        navController.navigate(DetailScreen.Compose.createRoute(replyTo))
                     }
                 )
             }
@@ -192,6 +192,9 @@ fun HackersPubApp(
                     },
                     onProfileClick = { handle ->
                         navController.navigate(DetailScreen.Profile.createRoute(handle))
+                    },
+                    onReplyClick = { postId ->
+                        navController.navigate(DetailScreen.Compose.createRoute(postId))
                     },
                     onSignInClick = {
                         navController.navigate(DetailScreen.SignIn.route)

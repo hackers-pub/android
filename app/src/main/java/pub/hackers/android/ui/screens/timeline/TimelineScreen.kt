@@ -38,7 +38,7 @@ import pub.hackers.android.ui.components.PostCard
 fun TimelineScreen(
     onPostClick: (String) -> Unit,
     onProfileClick: (String) -> Unit,
-    onComposeClick: () -> Unit,
+    onComposeClick: (String?) -> Unit,
     viewModel: TimelineViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -64,7 +64,7 @@ fun TimelineScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onComposeClick,
+                onClick = { onComposeClick(null) },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
@@ -110,7 +110,7 @@ fun TimelineScreen(
                                     post = post,
                                     onClick = { onPostClick(post.sharedPost?.id ?: post.id) },
                                     onProfileClick = onProfileClick,
-                                    onReplyClick = { onComposeClick() },
+                                    onReplyClick = { onComposeClick(post.sharedPost?.id ?: post.id) },
                                     onShareClick = {
                                         if (post.viewerHasShared) {
                                             viewModel.unsharePost(post.id)
