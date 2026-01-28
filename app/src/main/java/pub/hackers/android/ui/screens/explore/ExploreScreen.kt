@@ -146,7 +146,8 @@ fun ExploreScreen(
                                                     viewModel.sharePost(post.id)
                                                 }
                                             }
-                                        } else null
+                                        } else null,
+                                        onQuotedPostClick = onPostClick
                                     )
                                     HorizontalDivider(thickness = 0.5.dp)
                                 }

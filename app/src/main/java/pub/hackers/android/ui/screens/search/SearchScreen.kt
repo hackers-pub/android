@@ -111,7 +111,8 @@ fun SearchScreen(
                                 PostCard(
                                     post = post,
                                     onClick = { onPostClick(post.sharedPost?.id ?: post.id) },
-                                    onProfileClick = onProfileClick
+                                    onProfileClick = onProfileClick,
+                                    onQuotedPostClick = onPostClick
                                 )
                                 HorizontalDivider(thickness = 0.5.dp)
                             }

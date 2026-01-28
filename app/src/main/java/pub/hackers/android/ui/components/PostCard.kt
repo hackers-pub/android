@@ -1,5 +1,6 @@
 package pub.hackers.android.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ fun PostCard(
     onProfileClick: (String) -> Unit,
     onReplyClick: (() -> Unit)? = null,
     onShareClick: (() -> Unit)? = null,
+    onQuotedPostClick: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val displayPost = post.sharedPost ?: post
@@ -153,6 +155,15 @@ fun PostCard(
                 MediaGrid(media = displayPost.media)
             }
 
+            if (displayPost.quotedPost != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                QuotedPostPreview(
+                    post = displayPost.quotedPost!!,
+                    onClick = { onQuotedPostClick?.invoke(displayPost.quotedPost!!.id) },
+                    onProfileClick = onProfileClick
+                )
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
 
             EngagementBar(
@@ -233,6 +244,99 @@ private fun EngagementButton(
                 style = MaterialTheme.typography.bodySmall,
                 color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
+    }
+}
+
+@Composable
+fun QuotedPostPreview(
+    post: Post,
+    onClick: () -> Unit,
+    onProfileClick: (String) -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        border = BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.outlineVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    model = post.actor.avatarUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .clickable { onProfileClick(post.actor.handle) },
+                    contentScale = ContentScale.Crop
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = post.actor.name ?: post.actor.handle,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .clickable { onProfileClick(post.actor.handle) }
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = "@${post.actor.handle}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            post.name?.let { title ->
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
+
+            HtmlContent(
+                html = post.content,
+                maxLines = 3,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            if (post.media.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                AsyncImage(
+                    model = post.media.first().url,
+                    contentDescription = post.media.first().alt,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
     }
 }

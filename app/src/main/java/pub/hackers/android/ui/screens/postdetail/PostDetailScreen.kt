@@ -49,6 +49,7 @@ import pub.hackers.android.ui.components.FullScreenLoading
 import pub.hackers.android.ui.components.HtmlContent
 import pub.hackers.android.ui.components.MediaGrid
 import pub.hackers.android.ui.components.PostCard
+import pub.hackers.android.ui.components.QuotedPostPreview
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -193,6 +194,15 @@ private fun PostDetailContent(
                     MediaGrid(media = post.media)
                 }
 
+                if (post.quotedPost != null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    QuotedPostPreview(
+                        post = post.quotedPost!!,
+                        onClick = { onPostClick(post.quotedPost!!.id) },
+                        onProfileClick = onProfileClick
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
@@ -296,7 +306,8 @@ private fun PostDetailContent(
                 PostCard(
                     post = reply,
                     onClick = { onPostClick(reply.id) },
-                    onProfileClick = onProfileClick
+                    onProfileClick = onProfileClick,
+                    onQuotedPostClick = onPostClick
                 )
                 HorizontalDivider(thickness = 0.5.dp)
             }

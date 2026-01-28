@@ -125,7 +125,8 @@ fun ProfileScreen(
                                 PostCard(
                                     post = post,
                                     onClick = { onPostClick(post.sharedPost?.id ?: post.id) },
-                                    onProfileClick = {}
+                                    onProfileClick = {},
+                                    onQuotedPostClick = onPostClick
                                 )
                                 HorizontalDivider(thickness = 0.5.dp)
                             }

@@ -117,7 +117,8 @@ fun TimelineScreen(
                                         } else {
                                             viewModel.sharePost(post.id)
                                         }
-                                    }
+                                    },
+                                    onQuotedPostClick = onPostClick
                                 )
                                 HorizontalDivider(thickness = 0.5.dp)
                             }

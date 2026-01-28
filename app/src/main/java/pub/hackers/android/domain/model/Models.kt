@@ -40,6 +40,7 @@ data class Post(
     val mentions: List<String>,
     val sharedPost: Post? = null,
     val replyTarget: Post? = null,
+    val quotedPost: Post? = null,
     val visibility: PostVisibility = PostVisibility.PUBLIC
 )
 

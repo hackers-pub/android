@@ -468,6 +468,7 @@ class HackersPubRepository @Inject constructor(
             mentions = mentions.edges.map { it.node.handle },
             sharedPost = sharedPost,
             replyTarget = replyTarget,
+            quotedPost = quotedPost?.sharedPostFields?.toPost(),
             visibility = visibility
         )
     }

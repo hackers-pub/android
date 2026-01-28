@@ -46,6 +46,9 @@ fragment PostFields on Post {
             }
         }
     }
+    quotedPost {
+        ...SharedPostFields
+    }
 }
 
 fragment SharedPostFields on Post {
