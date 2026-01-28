@@ -14,8 +14,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import pub.hackers.android.ui.components.CompactTopBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -64,8 +64,8 @@ fun ExploreScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.nav_explore)) },
+            CompactTopBar(
+                title = stringResource(R.string.nav_explore),
                 actions = {
                     if (!isLoggedIn) {
                         TextButton(onClick = onSignInClick) {
