@@ -194,7 +194,7 @@ private fun NotificationItem(
                     actor != null -> onProfileClick(actor.handle)
                 }
             }
-            .padding(16.dp),
+            .padding(12.dp),
         verticalAlignment = Alignment.Top
     ) {
         Icon(

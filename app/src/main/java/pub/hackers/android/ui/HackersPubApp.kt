@@ -128,7 +128,7 @@ fun HackersPubApp(
                                     contentDescription = stringResource(screen.titleResId)
                                 )
                             },
-                            label = { Text(stringResource(screen.titleResId)) },
+                            label = null,
                             selected = selected,
                             onClick = {
                                 navController.navigate(screen.route) {

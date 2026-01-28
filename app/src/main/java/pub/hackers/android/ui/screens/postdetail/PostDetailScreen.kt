@@ -142,7 +142,7 @@ private fun PostDetailContent(
     LazyColumn {
         item {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(12.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -285,7 +285,7 @@ private fun PostDetailContent(
                     text = stringResource(R.string.replies),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(12.dp)
                 )
             }
 
