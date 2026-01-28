@@ -60,6 +60,7 @@
     <string name="share">Share</string>
     <string name="unshare">Unshare</string>
     <string name="reply">Reply</string>
+    <string name="replying_to">Replying to</string>
 
     <!-- Settings -->
     <string name="settings">Settings</string>
