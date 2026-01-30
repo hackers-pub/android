@@ -404,3 +404,12 @@ mutation UnsharePost($postId: ID!) {
         }
     }
 }
+
+query SearchActorsByHandle($prefix: String!, $limit: Int = 10) {
+    searchActorsByHandle(prefix: $prefix, limit: $limit) {
+        id
+        handle
+        name
+        avatarUrl
+    }
+}

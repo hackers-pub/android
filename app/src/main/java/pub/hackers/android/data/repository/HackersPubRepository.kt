@@ -446,6 +446,30 @@ class HackersPubRepository @Inject constructor(
         }
     }
 
+    suspend fun searchActorsByHandle(prefix: String, limit: Int = 10): Result<List<Actor>> {
+        return try {
+            val response = apolloClient.query(
+                SearchActorsByHandleQuery(prefix = prefix, limit = Optional.present(limit))
+            ).execute()
+
+            if (response.hasErrors()) {
+                Result.failure(Exception(response.errors?.firstOrNull()?.message ?: "Unknown error"))
+            } else {
+                val actors = response.data?.searchActorsByHandle?.map { actor ->
+                    Actor(
+                        id = actor.id,
+                        name = actor.name?.toString(),
+                        handle = actor.handle,
+                        avatarUrl = actor.avatarUrl.toString()
+                    )
+                } ?: emptyList()
+                Result.success(actors)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     // Extension functions to convert GraphQL fragment types to domain models
     private fun PostFields.toPost(
         sharedPost: Post? = null,

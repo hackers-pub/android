@@ -1,96 +1,160 @@
 type Account implements Node {
   actor: Actor!
+
   articleDrafts(after: String, before: String, first: Int, last: Int): AccountArticleDraftsConnection!
+
   avatarUrl: URL!
+
   bio: Markdown!
+
   created: DateTime!
+
   defaultNoteVisibility: PostVisibility!
+
   defaultShareVisibility: PostVisibility!
+
   handle: String!
+
   id: ID!
+
   invitationsLeft: Int!
+
   invitees(after: String, before: String, first: Int, last: Int): AccountInviteesConnection!
+
   inviter: Account
+
   links: [AccountLink!]!
+
   locales: [Locale!]
+
   moderator: Boolean!
+
   name: String!
+
   notifications(after: String, before: String, first: Int, last: Int): AccountNotificationsConnection!
+
   passkeys(after: String, before: String, first: Int, last: Int): AccountPasskeysConnection!
+
   preferAiSummary: Boolean!
+
   updated: DateTime!
+
   username: String!
+
   usernameChanged: DateTime
+
   uuid: UUID!
 }
 
 type AccountArticleDraftsConnection {
   edges: [AccountArticleDraftsConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type AccountArticleDraftsConnectionEdge {
   cursor: String!
+
   node: ArticleDraft!
 }
 
 type AccountInviteesConnection {
   edges: [AccountInviteesConnectionEdge!]!
+
   pageInfo: PageInfo!
+
   totalCount: Int!
 }
 
 type AccountInviteesConnectionEdge {
   cursor: String!
+
   node: Account!
 }
 
 type AccountLink implements Node {
   created: DateTime!
+
   handle: String
+
   icon: AccountLinkIcon!
+
   id: ID!
+
   index: Int!
+
   name: String!
+
   url: URL!
+
   verified: DateTime
 }
 
 enum AccountLinkIcon {
   ACTIVITYPUB
+
   AKKOMA
+
   BLUESKY
+
   CODEBERG
+
   DEV
+
   DISCORD
+
   FACEBOOK
+
   GITHUB
+
   GITLAB
+
   HACKERNEWS
+
   HOLLO
+
   INSTAGRAM
+
   KEYBASE
+
   LEMMY
+
   LINKEDIN
+
   LOBSTERS
+
   MASTODON
+
   MATRIX
+
   MISSKEY
+
   PIXELFED
+
   PLEROMA
+
   QIITA
+
   REDDIT
+
   SOURCEHUT
+
   THREADS
+
   VELOG
+
   WEB
+
   WIKIPEDIA
+
   X
+
   ZENN
 }
 
 input AccountLinkInput {
   name: String!
+
   url: URL!
 }
 
@@ -100,268 +164,404 @@ type AccountNotFoundError {
 
 type AccountNotificationsConnection {
   edges: [AccountNotificationsConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type AccountNotificationsConnectionEdge {
   cursor: String!
+
   node: Notification!
 }
 
 type AccountPasskeysConnection {
   edges: [AccountPasskeysConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type AccountPasskeysConnectionEdge {
   cursor: String!
+
   node: Passkey!
 }
 
 type Actor implements Node {
   account: Account
+
   articles(after: String, before: String, first: Int, last: Int): ActorArticlesConnection!
+
   automaticallyApprovesFollowers: Boolean!
+
   avatarInitials: String!
+
   avatarUrl: URL!
+
   bio: HTML
+
   created: DateTime!
+
   fields: [ActorField!]!
+
   followees(after: String, before: String, first: Int, last: Int): ActorFolloweesConnection!
+
   followers(after: String, before: String, first: Int, last: Int): ActorFollowersConnection!
+
   follows(followeeId: ID): Boolean!
+
   followsViewer: Boolean!
+
   handle: String!
+
   handleHost: String!
+
   headerUrl: URL
+
   id: ID!
+
   instance: Instance
+
   instanceHost: String!
+
   iri: URL!
+
   isFollowedBy(followerId: ID): Boolean!
+
   local: Boolean!
+
   name: HTML
+
   noteByUuid(uuid: UUID!): Note
+
   notes(after: String, before: String, first: Int, last: Int): ActorNotesConnection!
+
   pins(after: String, before: String, first: Int, last: Int): ActorPinsConnection!
+
   posts(after: String, before: String, first: Int, last: Int): ActorPostsConnection!
+
   published: DateTime
+
   questions(after: String, before: String, first: Int, last: Int): ActorQuestionsConnection!
+
   rawName: String
+
   sensitive: Boolean!
+
   sharedPosts(after: String, before: String, first: Int, last: Int): ActorSharedPostsConnection!
+
   successor: Actor
+
   type: ActorType!
+
   updated: DateTime!
+
   url: URL
+
   username: String!
+
   uuid: UUID!
 }
 
 type ActorArticlesConnection {
   edges: [ActorArticlesConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type ActorArticlesConnectionEdge {
   cursor: String!
+
   node: Article!
 }
 
-"""A property pair in an actor's account."""
+"""
+A property pair in an actor's account.
+"""
 type ActorField {
   name: String!
+
   value: HTML!
 }
 
 type ActorFolloweesConnection {
   edges: [ActorFolloweesConnectionEdge!]!
+
   pageInfo: PageInfo!
+
   totalCount: Int!
 }
 
 type ActorFolloweesConnectionEdge {
   accepted: DateTime
+
   created: DateTime!
+
   cursor: String!
+
   iri: URL!
+
   node: Actor!
 }
 
 type ActorFollowersConnection {
   edges: [ActorFollowersConnectionEdge!]!
+
   pageInfo: PageInfo!
+
   totalCount: Int!
 }
 
 type ActorFollowersConnectionEdge {
   accepted: DateTime
+
   created: DateTime!
+
   cursor: String!
+
   iri: URL!
+
   node: Actor!
 }
 
 type ActorNotesConnection {
   edges: [ActorNotesConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type ActorNotesConnectionEdge {
   cursor: String!
+
   node: Note!
 }
 
 type ActorPinsConnection {
   edges: [ActorPinsConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type ActorPinsConnectionEdge {
   cursor: String!
+
   node: Post!
 }
 
 type ActorPostsConnection {
   edges: [ActorPostsConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type ActorPostsConnectionEdge {
   cursor: String!
+
   node: Post!
 }
 
 type ActorQuestionsConnection {
   edges: [ActorQuestionsConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type ActorQuestionsConnectionEdge {
   cursor: String!
+
   node: Question!
 }
 
 type ActorSharedPostsConnection {
   edges: [ActorSharedPostsConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type ActorSharedPostsConnectionEdge {
   cursor: String!
+
   node: Post!
 }
 
 enum ActorType {
   APPLICATION
+
   GROUP
+
   ORGANIZATION
+
   PERSON
+
   SERVICE
 }
 
 input AddReactionToPostInput {
   clientMutationId: ID
+
   emoji: String!
+
   postId: ID!
 }
 
 type AddReactionToPostPayload {
   clientMutationId: ID
+
   reaction: Reaction
 }
 
-union AddReactionToPostResult = AddReactionToPostPayload | InvalidInputError | NotAuthenticatedError
+union AddReactionToPostResult = AddReactionToPostPayload|InvalidInputError|NotAuthenticatedError
 
 type Article implements Node & Post & Reactable {
   account: Account!
+
   actor: Actor!
+
   allowLlmTranslation: Boolean!
+
   content: HTML!
+
   contents(includeBeingTranslated: Boolean = false, language: Locale): [ArticleContent!]!
+
   engagementStats: PostEngagementStats!
+
   excerpt: String!
+
   hashtags: [Hashtag!]!
+
   id: ID!
+
   iri: URL!
+
   language: String
+
   link: PostLink
+
   media: [PostMedium!]!
+
   mentions(after: String, before: String, first: Int, last: Int): PostMentionsConnection!
+
   name: String
+
   published: DateTime!
+
   publishedYear: Int!
+
   quotedPost: Post
+
   quotes(after: String, before: String, first: Int, last: Int): PostQuotesConnection!
+
   reactionGroups: [ReactionGroup!]!
+
   replies(after: String, before: String, first: Int, last: Int): PostRepliesConnection!
+
   replyTarget: Post
+
   sensitive: Boolean!
+
   sharedPost: Post
+
   shares(after: String, before: String, first: Int, last: Int): PostSharesConnection!
+
   slug: String!
+
   summary: String
+
   tags: [String!]!
+
   updated: DateTime!
+
   url: URL
+
   uuid: UUID!
+
   viewerHasShared: Boolean!
+
   visibility: PostVisibility!
 }
 
 type ArticleContent implements Node {
   beingTranslated: Boolean!
+
   content: HTML!
+
   id: ID!
+
   language: Locale!
+
   originalLanguage: Locale
+
   published: DateTime!
+
   summary: String
+
   summaryStarted: DateTime
+
   title: String!
+
   translationRequester: Account
+
   translator: Account
+
   updated: DateTime!
+
   url: URL!
 }
 
 type ArticleDraft implements Node {
   account: Account!
+
   content: Markdown!
+
   created: DateTime!
+
   id: ID!
+
   tags: [String!]!
+
   title: String!
+
   updated: DateTime!
+
   uuid: UUID!
 }
 
 input CreateNoteInput {
   clientMutationId: ID
+
   content: Markdown!
+
   language: Locale!
+
   quotedPostId: ID
+
   replyTargetId: ID
+
   visibility: PostVisibility!
 }
 
 type CreateNotePayload {
   clientMutationId: ID
+
   note: Note!
 }
 
-union CreateNoteResult = CreateNotePayload | InvalidInputError | NotAuthenticatedError
+union CreateNoteResult = CreateNotePayload|InvalidInputError|NotAuthenticatedError
 
 type CustomEmoji implements Node {
   id: ID!
+
   imageUrl: String!
+
   iri: URL!
+
   name: String!
 }
 
 type CustomEmojiReactionGroup implements ReactionGroup {
   customEmoji: CustomEmoji!
+
   reactors(after: String, before: String, first: Int, last: Int): ReactionGroupReactorsConnection!
+
   subject: Reactable!
 }
 
@@ -377,28 +577,39 @@ scalar DateTime
 
 input DeleteArticleDraftInput {
   clientMutationId: ID
+
   id: ID!
 }
 
 type DeleteArticleDraftPayload {
   clientMutationId: ID
+
   deletedDraftId: ID!
 }
 
-union DeleteArticleDraftResult = DeleteArticleDraftPayload | InvalidInputError | NotAuthenticatedError
+union DeleteArticleDraftResult = DeleteArticleDraftPayload|InvalidInputError|NotAuthenticatedError
 
-"""A document in a specific language."""
+"""
+A document in a specific language.
+"""
 type Document {
   html: String!
 
-  """The locale of the document."""
+  """
+  The locale of the document.
+  """
   locale: Locale!
+
   markdown: String!
 
-  """The title of the document."""
+  """
+  The title of the document.
+  """
   title: String!
 
-  """Table of contents for the document."""
+  """
+  Table of contents for the document.
+  """
   toc: JSON!
 }
 
@@ -406,7 +617,9 @@ scalar Email
 
 type EmojiReactionGroup implements ReactionGroup {
   emoji: String!
+
   reactors(after: String, before: String, first: Int, last: Int): ReactionGroupReactorsConnection!
+
   subject: Reactable!
 }
 
@@ -416,17 +629,24 @@ type EmptySearchQueryError {
 
 type FollowNotification implements Node & Notification {
   account: Account!
+
   actors(after: String, before: String, first: Int, last: Int): NotificationActorsConnection!
+
   created: DateTime!
+
   id: ID!
+
   uuid: UUID!
 }
 
-"""An HTML string."""
+"""
+An HTML string.
+"""
 scalar HTML
 
 type Hashtag {
   href: URL!
+
   name: String!
 }
 
@@ -437,10 +657,15 @@ scalar IP
 
 type Instance implements Node {
   created: DateTime!
+
   host: String!
+
   id: ID!
+
   software: String
+
   softwareVersion: String
+
   updated: DateTime!
 }
 
@@ -448,47 +673,68 @@ type InvalidInputError {
   inputPath: String!
 }
 
-"""An invitation that has been created."""
+"""
+An invitation that has been created.
+"""
 type Invitation {
   email: Email!
+
   inviter: Account!
+
   locale: Locale!
+
   message: Markdown
 }
 
-"""A node in the invitation tree."""
+"""
+A node in the invitation tree.
+"""
 type InvitationTreeNode {
   avatarUrl: URL!
+
   hidden: Boolean!
+
   id: ID!
+
   inviterId: ID
+
   name: String
+
   username: String
 }
 
 enum InviteEmailError {
   EMAIL_ALREADY_TAKEN
+
   EMAIL_INVALID
 }
 
 enum InviteInviterError {
   INVITER_EMAIL_SEND_FAILED
+
   INVITER_NOT_AUTHENTICATED
+
   INVITER_NO_INVITATIONS_LEFT
 }
 
-union InviteResult = Invitation | InviteValidationErrors
+union InviteResult = Invitation|InviteValidationErrors
 
-"""Validation errors that occurred during the invitation process."""
+"""
+Validation errors that occurred during the invitation process.
+"""
 type InviteValidationErrors {
   email: InviteEmailError
+
   emailOwner: Account
+
   inviter: InviteInviterError
+
   verifyUrl: InviteVerifyUrlError
 }
 
 enum InviteVerifyUrlError {
   VERIFY_URL_NO_CODE
+
   VERIFY_URL_NO_TOKEN
 }
 
@@ -497,114 +743,90 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
-"""A BCP 47-compliant language tag."""
+"""
+A BCP 47-compliant language tag.
+"""
 scalar Locale
 
-"""A login challenge for an account."""
+"""
+A login challenge for an account.
+"""
 type LoginChallenge {
   account: Account!
+
   created: DateTime!
+
   token: UUID!
 }
 
-union LoginResult = AccountNotFoundError | LoginChallenge
+union LoginResult = AccountNotFoundError|LoginChallenge
 
-"""A Hackers' Pub-flavored Markdown text."""
+"""
+A Hackers' Pub-flavored Markdown text.
+"""
 scalar Markdown
 
 scalar MediaType
 
 type MentionNotification implements Node & Notification {
   account: Account!
+
   actors(after: String, before: String, first: Int, last: Int): NotificationActorsConnection!
+
   created: DateTime!
+
   id: ID!
+
   post: Post
+
   uuid: UUID!
 }
 
 type Mutation {
   addReactionToPost(input: AddReactionToPostInput!): AddReactionToPostResult!
-  completeLoginChallenge(
-    """The code of the login challenge."""
-    code: String!
 
-    """The token of the login challenge."""
-    token: UUID!
-  ): Session
+  completeLoginChallenge("The code of the login challenge." code: String!, "The token of the login challenge." token: UUID!): Session
 
-  """Complete the signup process by creating a new account and session."""
-  completeSignup(
-    """The verification code."""
-    code: String!
+  """
+  Complete the signup process by creating a new account and session.
+  """
+  completeSignup("The verification code." code: String!, "The account creation data." input: SignupInput!, "The signup token." token: UUID!): SignupResult!
 
-    """The account creation data."""
-    input: SignupInput!
-
-    """The signup token."""
-    token: UUID!
-  ): SignupResult!
   createNote(input: CreateNoteInput!): CreateNoteResult!
+
   deleteArticleDraft(input: DeleteArticleDraftInput!): DeleteArticleDraftResult!
-  getPasskeyAuthenticationOptions(
-    """Temporary session ID for passkey authentication."""
-    sessionId: UUID!
-  ): JSON!
+
+  getPasskeyAuthenticationOptions("Temporary session ID for passkey authentication." sessionId: UUID!): JSON!
+
   getPasskeyRegistrationOptions(accountId: ID!): JSON!
-  invite(
-    email: Email!
-    locale: Locale!
-    message: Markdown
 
-    """
-    The RFC 6570-compliant URI Template for the verification link.  Available variables: `{token}` and `{code}`.
-    """
-    verifyUrl: URITemplate!
-  ): InviteResult!
-  loginByEmail(
-    """The email of the account to sign in."""
-    email: String!
+  invite(email: Email!, locale: Locale!, message: Markdown, "The RFC 6570-compliant URI Template for the verification link.  Available variables: `{token}` and `{code}`." verifyUrl: URITemplate!): InviteResult!
 
-    """The locale for the sign-in email."""
-    locale: Locale!
+  loginByEmail("The email of the account to sign in." email: String!, "The locale for the sign-in email." locale: Locale!, "The RFC 6570-compliant URI Template for the verification link.  Available variabvles: `{token}` and `{code}`." verifyUrl: URITemplate!): LoginResult!
 
-    """
-    The RFC 6570-compliant URI Template for the verification link.  Available variabvles: `{token}` and `{code}`.
-    """
-    verifyUrl: URITemplate!
-  ): LoginResult!
-  loginByPasskey(
-    """WebAuthn authentication response from the client."""
-    authenticationResponse: JSON!
+  loginByPasskey("WebAuthn authentication response from the client." authenticationResponse: JSON!, "Temporary session ID used for authentication options." sessionId: UUID!): Session
 
-    """Temporary session ID used for authentication options."""
-    sessionId: UUID!
-  ): Session
-  loginByUsername(
-    """The locale for the sign-in email."""
-    locale: Locale!
+  loginByUsername("The locale for the sign-in email." locale: Locale!, "The username of the account to sign in." username: String!, "The RFC 6570-compliant URI Template for the verification link.  Available variabvles: `{token}` and `{code}`." verifyUrl: URITemplate!): LoginResult!
 
-    """The username of the account to sign in."""
-    username: String!
-
-    """
-    The RFC 6570-compliant URI Template for the verification link.  Available variabvles: `{token}` and `{code}`.
-    """
-    verifyUrl: URITemplate!
-  ): LoginResult!
   publishArticleDraft(input: PublishArticleDraftInput!): PublishArticleDraftResult!
+
   removeReactionFromPost(input: RemoveReactionFromPostInput!): RemoveReactionFromPostResult!
+
   revokePasskey(passkeyId: ID!): ID
 
-  """Revoke a session by its ID."""
-  revokeSession(
-    """The ID of the session to log out."""
-    sessionId: UUID!
-  ): Session
+  """
+  Revoke a session by its ID.
+  """
+  revokeSession("The ID of the session to log out." sessionId: UUID!): Session
+
   saveArticleDraft(input: SaveArticleDraftInput!): SaveArticleDraftResult!
+
   sharePost(input: SharePostInput!): SharePostResult!
+
   unsharePost(input: UnsharePostInput!): UnsharePostResult!
+
   updateAccount(input: UpdateAccountInput!): UpdateAccountPayload!
+
   verifyPasskeyRegistration(accountId: ID!, name: String!, registrationResponse: JSON!): PasskeyRegistrationResult!
 }
 
@@ -618,520 +840,748 @@ type NotAuthenticatedError {
 
 type Note implements Node & Post & Reactable {
   actor: Actor!
+
   content: HTML!
+
   engagementStats: PostEngagementStats!
+
   excerpt: String!
+
   hashtags: [Hashtag!]!
+
   id: ID!
+
   iri: URL!
+
   language: String
+
   link: PostLink
+
   media: [PostMedium!]!
+
   mentions(after: String, before: String, first: Int, last: Int): PostMentionsConnection!
+
   name: String
+
   published: DateTime!
+
   quotedPost: Post
+
   quotes(after: String, before: String, first: Int, last: Int): PostQuotesConnection!
+
   reactionGroups: [ReactionGroup!]!
+
   replies(after: String, before: String, first: Int, last: Int): PostRepliesConnection!
+
   replyTarget: Post
+
   sensitive: Boolean!
+
   sharedPost: Post
+
   shares(after: String, before: String, first: Int, last: Int): PostSharesConnection!
+
   summary: String
+
   updated: DateTime!
+
   url: URL
+
   uuid: UUID!
+
   viewerHasShared: Boolean!
+
   visibility: PostVisibility!
 }
 
 interface Notification implements Node {
   account: Account!
+
   actors(after: String, before: String, first: Int, last: Int): NotificationActorsConnection!
+
   created: DateTime!
+
   id: ID!
+
   uuid: UUID!
 }
 
 type NotificationActorsConnection {
   edges: [NotificationActorsConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type NotificationActorsConnectionEdge {
   cursor: String!
+
   node: Actor!
 }
 
 enum NotificationType {
   FOLLOW
+
   MENTION
+
   QUOTE
+
   REACT
+
   REPLY
+
   SHARE
 }
 
 type PageInfo {
   endCursor: String
+
   hasNextPage: Boolean!
+
   hasPreviousPage: Boolean!
+
   startCursor: String
 }
 
 type Passkey implements Node {
   created: DateTime!
+
   id: ID!
+
   lastUsed: DateTime
+
   name: String!
 }
 
 type PasskeyRegistrationResult {
   passkey: Passkey
+
   verified: Boolean!
 }
 
 type Poll implements Node {
   ends: DateTime!
+
   id: ID!
+
   multiple: Boolean!
+
   options: [PollOption!]!
+
   post: Post!
+
   voters(after: String, before: String, first: Int, last: Int): PollVotersConnection!
+
   votes(after: String, before: String, first: Int, last: Int): PollVotesConnection!
 }
 
 type PollOption {
   poll: Poll!
+
   title: String!
+
   votes(after: String, before: String, first: Int, last: Int): PollOptionVotesConnection!
 }
 
 type PollOptionVotesConnection {
   edges: [PollOptionVotesConnectionEdge!]!
+
   pageInfo: PageInfo!
+
   totalCount: Int!
 }
 
 type PollOptionVotesConnectionEdge {
   cursor: String!
+
   node: PollVote!
 }
 
 type PollVote {
   actor: Actor!
+
   created: DateTime!
+
   option: PollOption!
+
   poll: Poll!
 }
 
 type PollVotersConnection {
   edges: [PollVotersConnectionEdge!]!
+
   pageInfo: PageInfo!
+
   totalCount: Int!
 }
 
 type PollVotersConnectionEdge {
   cursor: String!
+
   node: Actor!
 }
 
 type PollVotesConnection {
   edges: [PollVotesConnectionEdge!]!
+
   pageInfo: PageInfo!
+
   totalCount: Int!
 }
 
 type PollVotesConnectionEdge {
   cursor: String!
+
   node: PollVote!
 }
 
 interface Post implements Node & Reactable {
   actor: Actor!
+
   content: HTML!
+
   engagementStats: PostEngagementStats!
+
   excerpt: String!
+
   hashtags: [Hashtag!]!
+
   id: ID!
+
   iri: URL!
+
   language: String
+
   link: PostLink
+
   media: [PostMedium!]!
+
   mentions(after: String, before: String, first: Int, last: Int): PostMentionsConnection!
+
   name: String
+
   published: DateTime!
+
   quotedPost: Post
+
   quotes(after: String, before: String, first: Int, last: Int): PostQuotesConnection!
+
   reactionGroups: [ReactionGroup!]!
+
   replies(after: String, before: String, first: Int, last: Int): PostRepliesConnection!
+
   replyTarget: Post
+
   sensitive: Boolean!
+
   sharedPost: Post
+
   shares(after: String, before: String, first: Int, last: Int): PostSharesConnection!
+
   summary: String
+
   updated: DateTime!
+
   url: URL
+
   uuid: UUID!
+
   viewerHasShared: Boolean!
+
   visibility: PostVisibility!
 }
 
 type PostEngagementStats {
   post: Post!
+
   quotes: Int!
+
   reactions: Int!
+
   replies: Int!
+
   shares: Int!
 }
 
 type PostLink implements Node {
   author: String
+
   creator: Actor
+
   description: String
+
   id: ID!
+
   image: PostLinkImage
+
   siteName: String
+
   title: String
+
   type: String
+
   url: URL!
 }
 
 type PostLinkImage {
   alt: String
+
   height: Int
+
   post: PostLink!
+
   type: MediaType
+
   url: URL!
+
   width: Int
 }
 
 type PostMedium implements Node {
   alt: String
+
   height: Int
+
   id: ID!
+
   sensitive: Boolean!
+
   thumbnailUrl: String
+
   type: MediaType!
+
   url: URL!
+
   width: Int
 }
 
 type PostMentionsConnection {
   edges: [PostMentionsConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type PostMentionsConnectionEdge {
   cursor: String!
+
   node: Actor!
 }
 
 type PostQuotesConnection {
   edges: [PostQuotesConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type PostQuotesConnectionEdge {
   cursor: String!
+
   node: Post!
 }
 
 type PostRepliesConnection {
   edges: [PostRepliesConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type PostRepliesConnectionEdge {
   cursor: String!
+
   node: Post!
 }
 
 type PostSharesConnection {
   edges: [PostSharesConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type PostSharesConnectionEdge {
   cursor: String!
+
   node: Post!
 }
 
 enum PostType {
   ARTICLE
+
   NOTE
+
   QUESTION
 }
 
 enum PostVisibility {
   DIRECT
+
   FOLLOWERS
+
   NONE
+
   PUBLIC
+
   UNLISTED
 }
 
 input PublishArticleDraftInput {
   allowLlmTranslation: Boolean
+
   clientMutationId: ID
+
   id: ID!
+
   language: Locale!
+
   slug: String!
 }
 
 type PublishArticleDraftPayload {
   article: Article!
+
   clientMutationId: ID
+
   deletedDraftId: ID!
 }
 
-union PublishArticleDraftResult = InvalidInputError | NotAuthenticatedError | PublishArticleDraftPayload
+union PublishArticleDraftResult = InvalidInputError|NotAuthenticatedError|PublishArticleDraftPayload
 
 type Query {
   accountByUsername(username: String!): Account
-  actorByHandle(
-    """Whether to allow local handles (e.g. @username)."""
-    allowLocalHandle: Boolean = false
-    handle: String!
-  ): Actor
+
+  actorByHandle("Whether to allow local handles (e.g. @username)." allowLocalHandle: Boolean = false, handle: String!): Actor
+
   actorByUuid(uuid: UUID!): Actor
+
   articleDraft(id: ID, uuid: UUID): ArticleDraft
+
   availableLocales: [Locale!]!
-  codeOfConduct(
-    """The locale for the Code of Conduct."""
-    locale: Locale!
-  ): Document!
+
+  codeOfConduct("The locale for the Code of Conduct." locale: Locale!): Document!
+
   instanceByHost(host: String!): Instance
 
-  """Returns all accounts as a flat array for building the invitation tree."""
+  """
+  Returns all accounts as a flat array for building the invitation tree.
+  """
   invitationTree: [InvitationTreeNode!]!
-  markdownGuide(
-    """The locale for the Markdown guide."""
-    locale: Locale!
-  ): Document!
+
+  markdownGuide("The locale for the Markdown guide." locale: Locale!): Document!
+
   node(id: ID!): Node
+
   nodes(ids: [ID!]!): [Node]!
+
   personalTimeline(after: String, before: String, first: Int, last: Int, local: Boolean = false, postType: PostType, withoutShares: Boolean = false): QueryPersonalTimelineConnection!
+
   publicTimeline(after: String, before: String, first: Int, languages: [Locale!] = [], last: Int, local: Boolean = false, postType: PostType, withoutShares: Boolean = false): QueryPublicTimelineConnection!
-  searchGuide(
-    """The locale for the search guide."""
-    locale: Locale!
-  ): Document!
+
+  searchActorsByHandle(limit: Int = 25, prefix: String!): [Actor!]!
+
+  searchGuide("The locale for the search guide." locale: Locale!): Document!
+
   searchObject(query: String!): SearchObjectResult
+
   searchPost(after: String, before: String, first: Int, languages: [Locale!] = [], last: Int, query: String!): QuerySearchPostConnection!
 
-  """Verify a signup token and return the signup info if valid."""
-  verifySignupToken(
-    """The verification code."""
-    code: String!
+  """
+  Verify a signup token and return the signup info if valid.
+  """
+  verifySignupToken("The verification code." code: String!, "The signup token to verify." token: UUID!): SignupInfo
 
-    """The signup token to verify."""
-    token: UUID!
-  ): SignupInfo
   viewer: Account
 }
 
 type QueryPersonalTimelineConnection {
   edges: [QueryPersonalTimelineConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type QueryPersonalTimelineConnectionEdge {
   added: DateTime!
+
   cursor: String!
+
   lastSharer: Actor
+
   node: Post!
+
   sharersCount: Int!
 }
 
 type QueryPublicTimelineConnection {
   edges: [QueryPublicTimelineConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type QueryPublicTimelineConnectionEdge {
   added: DateTime!
+
   cursor: String!
+
   lastSharer: Actor
+
   node: Post!
+
   sharersCount: Int!
 }
 
 type QuerySearchPostConnection {
   edges: [QuerySearchPostConnectionEdge!]!
+
   pageInfo: PageInfo!
 }
 
 type QuerySearchPostConnectionEdge {
   cursor: String!
+
   node: Post!
 }
 
 type Question implements Node & Post & Reactable {
   actor: Actor!
+
   content: HTML!
+
   engagementStats: PostEngagementStats!
+
   excerpt: String!
+
   hashtags: [Hashtag!]!
+
   id: ID!
+
   iri: URL!
+
   language: String
+
   link: PostLink
+
   media: [PostMedium!]!
+
   mentions(after: String, before: String, first: Int, last: Int): PostMentionsConnection!
+
   name: String
+
   poll: Poll!
+
   published: DateTime!
+
   quotedPost: Post
+
   quotes(after: String, before: String, first: Int, last: Int): PostQuotesConnection!
+
   reactionGroups: [ReactionGroup!]!
+
   replies(after: String, before: String, first: Int, last: Int): PostRepliesConnection!
+
   replyTarget: Post
+
   sensitive: Boolean!
+
   sharedPost: Post
+
   shares(after: String, before: String, first: Int, last: Int): PostSharesConnection!
+
   summary: String
+
   updated: DateTime!
+
   url: URL
+
   uuid: UUID!
+
   viewerHasShared: Boolean!
+
   visibility: PostVisibility!
 }
 
 type QuoteNotification implements Node & Notification {
   account: Account!
+
   actors(after: String, before: String, first: Int, last: Int): NotificationActorsConnection!
+
   created: DateTime!
+
   id: ID!
+
   post: Post
+
   uuid: UUID!
 }
 
 type ReactNotification implements Node & Notification {
   account: Account!
+
   actors(after: String, before: String, first: Int, last: Int): NotificationActorsConnection!
+
   created: DateTime!
+
   customEmoji: CustomEmoji
+
   emoji: String
+
   id: ID!
+
   post: Post
+
   uuid: UUID!
 }
 
 interface Reactable implements Node {
   id: ID!
+
   reactionGroups: [ReactionGroup!]!
 }
 
 type Reaction implements Node {
   actor: Actor!
+
   created: DateTime!
+
   data: ReactionData!
+
   id: ID!
+
   post: Post!
 }
 
-union ReactionData = CustomEmoji | StandardEmoji
+union ReactionData = CustomEmoji|StandardEmoji
 
 interface ReactionGroup {
   reactors(after: String, before: String, first: Int, last: Int): ReactionGroupReactorsConnection!
+
   subject: Reactable!
 }
 
 type ReactionGroupReactorsConnection {
   edges: [ReactionGroupReactorsConnectionEdge!]!
+
   pageInfo: PageInfo!
+
   totalCount: Int!
+
   viewerHasReacted: Boolean!
 }
 
 type ReactionGroupReactorsConnectionEdge {
   cursor: String!
+
   node: Actor!
 }
 
 input RemoveReactionFromPostInput {
   clientMutationId: ID
+
   emoji: String!
+
   postId: ID!
 }
 
 type RemoveReactionFromPostPayload {
   clientMutationId: ID
+
   success: Boolean!
 }
 
-union RemoveReactionFromPostResult = InvalidInputError | NotAuthenticatedError | RemoveReactionFromPostPayload
+union RemoveReactionFromPostResult = InvalidInputError|NotAuthenticatedError|RemoveReactionFromPostPayload
 
 type ReplyNotification implements Node & Notification {
   account: Account!
+
   actors(after: String, before: String, first: Int, last: Int): NotificationActorsConnection!
+
   created: DateTime!
+
   id: ID!
+
   post: Post
+
   uuid: UUID!
 }
 
 input SaveArticleDraftInput {
   clientMutationId: ID
+
   content: Markdown!
+
   id: ID
+
   tags: [String!]!
+
   title: String!
 }
 
 type SaveArticleDraftPayload {
   clientMutationId: ID
+
   draft: ArticleDraft!
 }
 
-union SaveArticleDraftResult = InvalidInputError | NotAuthenticatedError | SaveArticleDraftPayload
+union SaveArticleDraftResult = InvalidInputError|NotAuthenticatedError|SaveArticleDraftPayload
 
-union SearchObjectResult = EmptySearchQueryError | SearchedObject
+union SearchObjectResult = EmptySearchQueryError|SearchedObject
 
 type SearchedObject {
   url: String!
 }
 
-"""A login session for an account."""
+"""
+A login session for an account.
+"""
 type Session {
   account: Account!
 
-  """The creation date of the session."""
+  """
+  The creation date of the session.
+  """
   created: DateTime!
 
-  """The access token for the session."""
+  """
+  The access token for the session.
+  """
   id: UUID!
 
-  """The IP address that created the session."""
+  """
+  The IP address that created the session.
+  """
   ipAddress: IP
 
-  """The user agent of the session."""
+  """
+  The user agent of the session.
+  """
   userAgent: String
 }
 
 type ShareNotification implements Node & Notification {
   account: Account!
+
   actors(after: String, before: String, first: Int, last: Int): NotificationActorsConnection!
+
   created: DateTime!
+
   id: ID!
+
   post: Post
+
   uuid: UUID!
 }
 
 input SharePostInput {
   clientMutationId: ID
+
   postId: ID!
 }
 
 type SharePostPayload {
   clientMutationId: ID
+
   originalPost: Post!
+
   share: Post!
 }
 
-union SharePostResult = InvalidInputError | NotAuthenticatedError | SharePostPayload
+union SharePostResult = InvalidInputError|NotAuthenticatedError|SharePostPayload
 
 enum SignupBioError {
   BIO_TOO_LONG
@@ -1139,6 +1589,7 @@ enum SignupBioError {
 
 enum SignupDisplayNameError {
   DISPLAY_NAME_REQUIRED
+
   DISPLAY_NAME_TOO_LONG
 }
 
@@ -1147,29 +1598,41 @@ A signup info containing email and inviter information for account creation.
 """
 type SignupInfo {
   email: String!
+
   inviter: Account
 }
 
-"""Input data for completing account signup."""
+"""
+Input data for completing account signup.
+"""
 input SignupInput {
   bio: String!
+
   name: String!
+
   username: String!
 }
 
-union SignupResult = Session | SignupValidationErrors
+union SignupResult = Session|SignupValidationErrors
 
 enum SignupUsernameError {
   USERNAME_ALREADY_TAKEN
+
   USERNAME_INVALID_CHARACTERS
+
   USERNAME_REQUIRED
+
   USERNAME_TOO_LONG
 }
 
-"""Validation errors for signup fields."""
+"""
+Validation errors for signup fields.
+"""
 type SignupValidationErrors {
   bio: SignupBioError
+
   name: SignupDisplayNameError
+
   username: SignupUsernameError
 }
 
@@ -1191,33 +1654,48 @@ scalar UUID
 
 input UnsharePostInput {
   clientMutationId: ID
+
   postId: ID!
 }
 
 type UnsharePostPayload {
   clientMutationId: ID
+
   originalPost: Post!
 }
 
-union UnsharePostResult = InvalidInputError | NotAuthenticatedError | UnsharePostPayload
+union UnsharePostResult = InvalidInputError|NotAuthenticatedError|UnsharePostPayload
 
 input UpdateAccountInput {
   avatarUrl: URL
+
   bio: String
+
   clientMutationId: ID
+
   defaultNoteVisibility: PostVisibility
+
   defaultShareVisibility: PostVisibility
+
   hideForeignLanguages: Boolean
+
   hideFromInvitationTree: Boolean
+
   id: ID!
+
   links: [AccountLinkInput!]
+
   locales: [Locale!]
+
   name: String
+
   preferAiSummary: Boolean
+
   username: String
 }
 
 type UpdateAccountPayload {
   account: Account!
+
   clientMutationId: ID
 }
