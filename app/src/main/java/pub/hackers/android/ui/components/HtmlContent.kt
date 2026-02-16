@@ -1,6 +1,9 @@
 package pub.hackers.android.ui.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import java.net.URI
 
@@ -26,8 +30,17 @@ private enum class LinkType {
 
 private data class ListContext(val ordered: Boolean, var itemIndex: Int = 0)
 
+private sealed class ContentBlock {
+    data class Text(val html: String) : ContentBlock()
+    data class Code(val codeHtml: String) : ContentBlock()
+}
+
 private val TAG_REGEX = Regex("""<(/?)(\w+)([^>]*)>""")
 private val ATTR_REGEX = Regex("""([\w-]+)=["']([^"']*)["']""")
+private val PRE_CODE_REGEX = Regex(
+    """<pre[^>]*>\s*<code[^>]*>([\s\S]*?)</code>\s*</pre>""",
+    RegexOption.IGNORE_CASE
+)
 
 @Composable
 fun HtmlContent(
@@ -43,39 +56,116 @@ fun HtmlContent(
     val mentionBg = linkColor.copy(alpha = 0.10f)
     val codeBg = if (isDark) Color(0xFF1E293B) else Color(0xFFF1F5F9)
     val textColor = MaterialTheme.colorScheme.onSurface
+    val bodyStyle = MaterialTheme.typography.bodyMedium.copy(color = textColor)
 
-    val annotatedString = remember(html, linkColor, mentionBg, codeBg) {
-        parseHtmlToAnnotatedString(html, linkColor, mentionBg, codeBg)
+    if (maxLines < Int.MAX_VALUE) {
+        // Preview mode: flat AnnotatedString (no block code highlighting)
+        val annotatedString = remember(html, linkColor, mentionBg, codeBg) {
+            parseHtmlToAnnotatedString(html, linkColor, mentionBg, codeBg)
+        }
+
+        ClickableText(
+            text = annotatedString,
+            style = bodyStyle,
+            maxLines = maxLines,
+            overflow = TextOverflow.Ellipsis,
+            modifier = modifier,
+            onClick = { offset ->
+                handleClick(annotatedString, offset, uriHandler, onMentionClick, onLinkClick)
+            }
+        )
+    } else {
+        // Full mode: block-based rendering with syntax-highlighted code blocks
+        val blocks = remember(html) { splitIntoBlocks(html) }
+
+        Column(modifier = modifier) {
+            blocks.forEachIndexed { index, block ->
+                when (block) {
+                    is ContentBlock.Text -> {
+                        if (block.html.isNotBlank()) {
+                            val annotatedString = remember(block.html, linkColor, mentionBg, codeBg) {
+                                parseHtmlToAnnotatedString(block.html, linkColor, mentionBg, codeBg)
+                            }
+                            if (annotatedString.isNotEmpty()) {
+                                ClickableText(
+                                    text = annotatedString,
+                                    style = bodyStyle,
+                                    onClick = { offset ->
+                                        handleClick(annotatedString, offset, uriHandler, onMentionClick, onLinkClick)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    is ContentBlock.Code -> {
+                        if (index > 0) Spacer(modifier = Modifier.height(8.dp))
+                        CodeBlockView(
+                            codeHtml = block.codeHtml
+                        )
+                        if (index < blocks.lastIndex) Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun handleClick(
+    annotatedString: AnnotatedString,
+    offset: Int,
+    uriHandler: androidx.compose.ui.platform.UriHandler,
+    onMentionClick: ((String) -> Unit)?,
+    onLinkClick: ((String) -> Unit)?
+) {
+    annotatedString.getStringAnnotations("MENTION", offset, offset)
+        .firstOrNull()?.let { annotation ->
+            val handle = extractHandleFromUrl(annotation.item)
+            if (handle != null && onMentionClick != null) {
+                onMentionClick(handle)
+            } else {
+                try { uriHandler.openUri(annotation.item) } catch (_: Exception) {}
+            }
+            return
+        }
+
+    annotatedString.getStringAnnotations("URL", offset, offset)
+        .firstOrNull()?.let { annotation ->
+            if (onLinkClick != null) {
+                onLinkClick(annotation.item)
+            } else {
+                try { uriHandler.openUri(annotation.item) } catch (_: Exception) {}
+            }
+        }
+}
+
+private fun splitIntoBlocks(html: String): List<ContentBlock> {
+    val blocks = mutableListOf<ContentBlock>()
+    var lastEnd = 0
+    val source = html.trim()
+
+    for (match in PRE_CODE_REGEX.findAll(source)) {
+        val before = source.substring(lastEnd, match.range.first)
+        if (before.isNotBlank()) {
+            blocks.add(ContentBlock.Text(before))
+        }
+
+        val codeHtml = match.groupValues[1]
+        blocks.add(ContentBlock.Code(codeHtml))
+
+        lastEnd = match.range.last + 1
     }
 
-    ClickableText(
-        text = annotatedString,
-        style = MaterialTheme.typography.bodyMedium.copy(color = textColor),
-        maxLines = maxLines,
-        overflow = TextOverflow.Ellipsis,
-        modifier = modifier,
-        onClick = { offset ->
-            annotatedString.getStringAnnotations("MENTION", offset, offset)
-                .firstOrNull()?.let { annotation ->
-                    val handle = extractHandleFromUrl(annotation.item)
-                    if (handle != null && onMentionClick != null) {
-                        onMentionClick(handle)
-                    } else {
-                        try { uriHandler.openUri(annotation.item) } catch (_: Exception) {}
-                    }
-                    return@ClickableText
-                }
+    val after = source.substring(lastEnd)
+    if (after.isNotBlank()) {
+        blocks.add(ContentBlock.Text(after))
+    }
 
-            annotatedString.getStringAnnotations("URL", offset, offset)
-                .firstOrNull()?.let { annotation ->
-                    if (onLinkClick != null) {
-                        onLinkClick(annotation.item)
-                    } else {
-                        try { uriHandler.openUri(annotation.item) } catch (_: Exception) {}
-                    }
-                }
-        }
-    )
+    // If no code blocks found, return the whole thing as text
+    if (blocks.isEmpty()) {
+        blocks.add(ContentBlock.Text(source))
+    }
+
+    return blocks
 }
 
 private fun extractHandleFromUrl(url: String): String? {
