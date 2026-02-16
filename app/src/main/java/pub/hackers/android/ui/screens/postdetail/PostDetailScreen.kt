@@ -200,7 +200,8 @@ private fun PostDetailContent(
 
                 HtmlContent(
                     html = post.content,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    onMentionClick = onProfileClick
                 )
 
                 if (post.media.isNotEmpty()) {
@@ -377,7 +378,8 @@ private fun ReplyTargetPreview(
         HtmlContent(
             html = post.content,
             maxLines = 3,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            onMentionClick = onProfileClick
         )
 
         if (post.media.isNotEmpty()) {

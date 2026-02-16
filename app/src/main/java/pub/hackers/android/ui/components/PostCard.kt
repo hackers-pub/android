@@ -147,7 +147,8 @@ fun PostCard(
             HtmlContent(
                 html = displayPost.content,
                 maxLines = 10,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onMentionClick = onProfileClick
             )
 
             if (displayPost.media.isNotEmpty()) {
@@ -322,7 +323,8 @@ fun QuotedPostPreview(
             HtmlContent(
                 html = post.content,
                 maxLines = 3,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onMentionClick = onProfileClick
             )
 
             if (post.media.isNotEmpty()) {
@@ -413,30 +415,6 @@ fun MediaGrid(media: List<pub.hackers.android.domain.model.Media>) {
     }
 }
 
-@Composable
-fun HtmlContent(
-    html: String,
-    maxLines: Int = Int.MAX_VALUE,
-    modifier: Modifier = Modifier
-) {
-    val plainText = html
-        .replace(Regex("<[^>]*>"), "")
-        .replace("&nbsp;", " ")
-        .replace("&amp;", "&")
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&#39;", "'")
-        .trim()
-
-    Text(
-        text = plainText,
-        style = MaterialTheme.typography.bodyMedium,
-        maxLines = maxLines,
-        overflow = TextOverflow.Ellipsis,
-        modifier = modifier
-    )
-}
 
 private fun formatRelativeTime(instant: Instant): String {
     val now = Instant.now()
