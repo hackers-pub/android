@@ -53,6 +53,9 @@
     <string name="no_results">No results found</string>
 
     <!-- Post -->
+    <string name="article">Article</string>
+    <string name="read_full_article">Read full article</string>
+    <string name="read_on_web">Read on web</string>
     <string name="replies">Replies</string>
     <string name="shares">Shares</string>
     <string name="reactions">Reactions</string>

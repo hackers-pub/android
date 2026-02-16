@@ -52,6 +52,38 @@ fun PostCard(
     modifier: Modifier = Modifier
 ) {
     val displayPost = post.sharedPost ?: post
+
+    if (displayPost.typename == "Article") {
+        ArticleCard(
+            post = post,
+            onClick = onClick,
+            onProfileClick = onProfileClick,
+            modifier = modifier
+        )
+    } else {
+        NoteCard(
+            post = post,
+            onClick = onClick,
+            onProfileClick = onProfileClick,
+            onReplyClick = onReplyClick,
+            onShareClick = onShareClick,
+            onQuotedPostClick = onQuotedPostClick,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun NoteCard(
+    post: Post,
+    onClick: () -> Unit,
+    onProfileClick: (String) -> Unit,
+    onReplyClick: (() -> Unit)? = null,
+    onShareClick: (() -> Unit)? = null,
+    onQuotedPostClick: ((String) -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    val displayPost = post.sharedPost ?: post
     val isRepost = post.sharedPost != null
 
     Card(
@@ -416,7 +448,7 @@ fun MediaGrid(media: List<pub.hackers.android.domain.model.Media>) {
 }
 
 
-private fun formatRelativeTime(instant: Instant): String {
+internal fun formatRelativeTime(instant: Instant): String {
     val now = Instant.now()
     val duration = Duration.between(instant, now)
 
