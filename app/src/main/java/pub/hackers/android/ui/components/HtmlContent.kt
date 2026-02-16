@@ -444,7 +444,7 @@ private fun parseHtmlToAnnotatedString(
                         }
 
                         "li" -> {
-                            insideListItem = false
+                            // Keep insideListItem = true so next <li> adds a newline
                         }
 
                         "a" -> {
