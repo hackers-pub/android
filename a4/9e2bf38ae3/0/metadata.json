@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "a49e2bf38ae3",
+  "session_id": "0a446b72-6e8a-4d02-9bf3-dae7f8778d9e",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-19T09:00:52.391257Z",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    ".claude/settings.local.json",
+    "app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+    "app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+    "fastlane/metadata/android/en-US/changelogs/1.txt",
+    "fastlane/metadata/android/en-US/full_description.txt",
+    "fastlane/metadata/android/en-US/images/icon.png",
+    "fastlane/metadata/android/en-US/short_description.txt",
+    "fastlane/metadata/android/en-US/title.txt"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "e781754e-449e-4833-9835-fa0016de4527",
+  "token_usage": {
+    "input_tokens": 117,
+    "cache_creation_tokens": 27711,
+    "cache_read_tokens": 1041960,
+    "output_tokens": 7761,
+    "api_call_count": 38
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-19T09:00:52.287856Z",
+    "agent_lines": 0,
+    "human_added": 25,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 25,
+    "agent_percentage": 0
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android-prod/0a446b72-6e8a-4d02-9bf3-dae7f8778d9e.jsonl"
+}
