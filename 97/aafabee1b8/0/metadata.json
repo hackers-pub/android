@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "97aafabee1b8",
+  "session_id": "0475faa1-06c4-4183-b2d4-71e5ee114c54",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-16T07:28:42.204647Z",
+  "branch": "fix/article-rendering",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/components/HtmlContent.kt"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "9670c475-e793-4aaa-bc40-3bbc65d48240",
+  "token_usage": {
+    "input_tokens": 119,
+    "cache_creation_tokens": 244323,
+    "cache_read_tokens": 7769967,
+    "output_tokens": 25392,
+    "api_call_count": 95
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-16T07:28:41.334971Z",
+    "agent_lines": 204,
+    "human_added": 34,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 238,
+    "agent_percentage": 85.71428571428571
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/0475faa1-06c4-4183-b2d4-71e5ee114c54.jsonl"
+}

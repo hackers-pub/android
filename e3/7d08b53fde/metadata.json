@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "e37d08b53fde",
+  "strategy": "manual-commit",
+  "branch": "feat/external-share-from-timeline",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/components/PostCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/notifications/NotificationsScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/timeline/TimelineScreen.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/e3/7d08b53fde/0/metadata.json",
+      "transcript": "/e3/7d08b53fde/0/full.jsonl",
+      "context": "/e3/7d08b53fde/0/context.md",
+      "content_hash": "/e3/7d08b53fde/0/content_hash.txt",
+      "prompt": "/e3/7d08b53fde/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 61,
+    "cache_creation_tokens": 19825,
+    "cache_read_tokens": 21657097,
+    "output_tokens": 11455,
+    "api_call_count": 59
+  }
+}

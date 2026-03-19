@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "779997634795",
+  "session_id": "948a3954-6196-4010-8a1f-80c4cef48fcc",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-18T14:20:37.827419Z",
+  "branch": "feat/follow-unfollow",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/graphql/pub/hackers/android/operations.graphql",
+    "app/src/main/java/pub/hackers/android/data/repository/HackersPubRepository.kt",
+    "app/src/main/java/pub/hackers/android/domain/model/Models.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/profile/ProfileScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/profile/ProfileViewModel.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "e92e083c-7853-4e8a-893d-1960c815dd7f",
+  "token_usage": {
+    "input_tokens": 9179,
+    "cache_creation_tokens": 95593,
+    "cache_read_tokens": 3225903,
+    "output_tokens": 18521,
+    "api_call_count": 46
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-18T14:20:37.5165Z",
+    "agent_lines": 611,
+    "human_added": 290,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 901,
+    "agent_percentage": 67.81354051054383
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/948a3954-6196-4010-8a1f-80c4cef48fcc.jsonl"
+}

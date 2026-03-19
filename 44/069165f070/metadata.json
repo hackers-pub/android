@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "44069165f070",
+  "strategy": "manual-commit",
+  "branch": "feat/post-visibility-indicator",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/components/PostCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/explore/ExploreScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/timeline/TimelineScreen.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/44/069165f070/0/metadata.json",
+      "transcript": "/44/069165f070/0/full.jsonl",
+      "context": "/44/069165f070/0/context.md",
+      "content_hash": "/44/069165f070/0/content_hash.txt",
+      "prompt": "/44/069165f070/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 65,
+    "cache_creation_tokens": 21508,
+    "cache_read_tokens": 20489786,
+    "output_tokens": 13558,
+    "api_call_count": 63
+  }
+}

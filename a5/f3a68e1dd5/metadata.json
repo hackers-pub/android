@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "a5f3a68e1dd5",
+  "strategy": "manual-commit",
+  "branch": "feat/image-share-download",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/components/PostCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/notifications/NotificationsScreen.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a5/f3a68e1dd5/0/metadata.json",
+      "transcript": "/a5/f3a68e1dd5/0/full.jsonl",
+      "context": "/a5/f3a68e1dd5/0/context.md",
+      "content_hash": "/a5/f3a68e1dd5/0/content_hash.txt",
+      "prompt": "/a5/f3a68e1dd5/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 39,
+    "cache_creation_tokens": 491490,
+    "cache_read_tokens": 17690746,
+    "output_tokens": 7723,
+    "api_call_count": 37
+  }
+}

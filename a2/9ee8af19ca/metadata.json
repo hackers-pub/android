@@ -1,0 +1,34 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "a29ee8af19ca",
+  "strategy": "manual-commit",
+  "branch": "feature/redesign-entire-screen",
+  "checkpoints_count": 9,
+  "files_touched": [
+    ".gitignore",
+    ".superpowers/brainstorm/41721-1773893996/accent-color-v2.html",
+    ".superpowers/brainstorm/41721-1773893996/accent-color.html",
+    ".superpowers/brainstorm/41721-1773893996/dark-mode.html",
+    ".superpowers/brainstorm/41721-1773893996/navigation-style.html",
+    ".superpowers/brainstorm/41721-1773893996/profile-layout.html",
+    ".superpowers/brainstorm/41721-1773893996/timeline-style.html",
+    ".superpowers/brainstorm/41721-1773893996/waiting.html",
+    "docs/superpowers/specs/2026-03-19-android-redesign-design.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a2/9ee8af19ca/0/metadata.json",
+      "transcript": "/a2/9ee8af19ca/0/full.jsonl",
+      "context": "/a2/9ee8af19ca/0/context.md",
+      "content_hash": "/a2/9ee8af19ca/0/content_hash.txt",
+      "prompt": "/a2/9ee8af19ca/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 71,
+    "cache_creation_tokens": 83950,
+    "cache_read_tokens": 2992976,
+    "output_tokens": 49247,
+    "api_call_count": 47
+  }
+}

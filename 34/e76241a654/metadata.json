@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "34e76241a654",
+  "strategy": "manual-commit",
+  "branch": "feat/compose-reply-label",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/AndroidManifest.xml",
+    "app/src/main/java/pub/hackers/android/MainActivity.kt",
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/auth/SignInScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/auth/SignInViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/profile/ProfileScreen.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/34/e76241a654/0/metadata.json",
+      "transcript": "/34/e76241a654/0/full.jsonl",
+      "context": "/34/e76241a654/0/context.md",
+      "content_hash": "/34/e76241a654/0/content_hash.txt",
+      "prompt": "/34/e76241a654/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 72,
+    "cache_creation_tokens": 24324,
+    "cache_read_tokens": 35626100,
+    "output_tokens": 12727,
+    "api_call_count": 70
+  }
+}

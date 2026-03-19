@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "cd90b4774e13",
+  "session_id": "8a9ec257-cad9-4634-866d-d0bffa235e37",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-19T05:38:31.927637Z",
+  "branch": "feature/redesign-entire-screen",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/screens/timeline/TimelineScreen.kt"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "8653f3c4-4b6f-47ae-a715-3710669bf9c5",
+  "checkpoint_transcript_start": 1650,
+  "transcript_lines_at_start": 1650,
+  "token_usage": {
+    "input_tokens": 9,
+    "cache_creation_tokens": 3549,
+    "cache_read_tokens": 1614923,
+    "output_tokens": 1262,
+    "api_call_count": 7
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-19T05:38:29.935802Z",
+    "agent_lines": 13,
+    "human_added": 50,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 63,
+    "agent_percentage": 20.634920634920633
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/8a9ec257-cad9-4634-866d-d0bffa235e37.jsonl"
+}

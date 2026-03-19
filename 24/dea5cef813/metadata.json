@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "24dea5cef813",
+  "strategy": "manual-commit",
+  "branch": "feat/dynamic-app-version",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/profile/ProfileScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/settings/SettingsScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/settings/SettingsViewModel.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/24/dea5cef813/0/metadata.json",
+      "transcript": "/24/dea5cef813/0/full.jsonl",
+      "context": "/24/dea5cef813/0/context.md",
+      "content_hash": "/24/dea5cef813/0/content_hash.txt",
+      "prompt": "/24/dea5cef813/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 39,
+    "cache_creation_tokens": 320460,
+    "cache_read_tokens": 11072742,
+    "output_tokens": 8599,
+    "api_call_count": 37
+  }
+}

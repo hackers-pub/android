@@ -1,0 +1,34 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "c3d3bb181d37",
+  "session_id": "948a3954-6196-4010-8a1f-80c4cef48fcc",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-18T14:33:59.368623Z",
+  "branch": "feat/delete-post",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailViewModel.kt"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "c1b15f5f-34d9-4adc-873e-a95af8d9ad15",
+  "checkpoint_transcript_start": 311,
+  "transcript_lines_at_start": 311,
+  "token_usage": {
+    "input_tokens": 21,
+    "cache_creation_tokens": 21182,
+    "cache_read_tokens": 2036937,
+    "output_tokens": 8134,
+    "api_call_count": 18
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-18T14:33:58.950434Z",
+    "agent_lines": 145,
+    "human_added": 42,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 187,
+    "agent_percentage": 77.54010695187165
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/948a3954-6196-4010-8a1f-80c4cef48fcc.jsonl"
+}

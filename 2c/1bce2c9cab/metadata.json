@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "2c1bce2c9cab",
+  "strategy": "manual-commit",
+  "branch": "feat/quote-from-timeline",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/PostCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/explore/ExploreScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/explore/ExploreViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/timeline/TimelineScreen.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/2c/1bce2c9cab/0/metadata.json",
+      "transcript": "/2c/1bce2c9cab/0/full.jsonl",
+      "context": "/2c/1bce2c9cab/0/context.md",
+      "content_hash": "/2c/1bce2c9cab/0/content_hash.txt",
+      "prompt": "/2c/1bce2c9cab/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 40,
+    "cache_creation_tokens": 18295,
+    "cache_read_tokens": 10838207,
+    "output_tokens": 9017,
+    "api_call_count": 37
+  }
+}

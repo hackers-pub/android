@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "24dea5cef813",
+  "session_id": "948a3954-6196-4010-8a1f-80c4cef48fcc",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-18T22:54:17.498832Z",
+  "branch": "feat/dynamic-app-version",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/profile/ProfileScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/settings/SettingsScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/settings/SettingsViewModel.kt"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "c6a2f75c-3e17-4231-8208-2274d368ed47",
+  "checkpoint_transcript_start": 2164,
+  "transcript_lines_at_start": 2164,
+  "token_usage": {
+    "input_tokens": 39,
+    "cache_creation_tokens": 320460,
+    "cache_read_tokens": 11072742,
+    "output_tokens": 8599,
+    "api_call_count": 37
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-18T22:54:15.553645Z",
+    "agent_lines": 60,
+    "human_added": 44,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 104,
+    "agent_percentage": 57.692307692307686
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/948a3954-6196-4010-8a1f-80c4cef48fcc.jsonl"
+}

@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "33749e8cb58e",
+  "strategy": "manual-commit",
+  "branch": "feature/redesign-entire-screen",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeScreen.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/33/749e8cb58e/0/metadata.json",
+      "transcript": "/33/749e8cb58e/0/full.jsonl",
+      "context": "/33/749e8cb58e/0/context.md",
+      "content_hash": "/33/749e8cb58e/0/content_hash.txt",
+      "prompt": "/33/749e8cb58e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 9,
+    "cache_creation_tokens": 2244,
+    "cache_read_tokens": 1389201,
+    "output_tokens": 966,
+    "api_call_count": 7
+  }
+}

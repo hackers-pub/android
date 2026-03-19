@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "f63fe87ab6af",
+  "strategy": "manual-commit",
+  "branch": "feat/postdetail-refresh-loadmore",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/profile/ProfileScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/profile/ProfileViewModel.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/f6/3fe87ab6af/0/metadata.json",
+      "transcript": "/f6/3fe87ab6af/0/full.jsonl",
+      "context": "/f6/3fe87ab6af/0/context.md",
+      "content_hash": "/f6/3fe87ab6af/0/content_hash.txt",
+      "prompt": "/f6/3fe87ab6af/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 88,
+    "cache_creation_tokens": 45224,
+    "cache_read_tokens": 20073780,
+    "output_tokens": 19197,
+    "api_call_count": 86
+  }
+}

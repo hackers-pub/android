@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "cd90b4774e13",
+  "strategy": "manual-commit",
+  "branch": "feature/redesign-entire-screen",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/screens/timeline/TimelineScreen.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/cd/90b4774e13/0/metadata.json",
+      "transcript": "/cd/90b4774e13/0/full.jsonl",
+      "context": "/cd/90b4774e13/0/context.md",
+      "content_hash": "/cd/90b4774e13/0/content_hash.txt",
+      "prompt": "/cd/90b4774e13/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 9,
+    "cache_creation_tokens": 3549,
+    "cache_read_tokens": 1614923,
+    "output_tokens": 1262,
+    "api_call_count": 7
+  }
+}

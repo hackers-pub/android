@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "0aab86d58d8c",
+  "session_id": "0475faa1-06c4-4183-b2d4-71e5ee114c54",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-16T08:02:41.681906Z",
+  "branch": "fix/article-rendering",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "app/build.gradle.kts",
+    "app/src/main/java/pub/hackers/android/ui/components/ArticleCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/CodeBlockView.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/HtmlContent.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/PostCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/res/values/strings.xml",
+    "gradle/libs.versions.toml"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "da49bd4d-fb7d-4cfc-9092-556278a41191",
+  "checkpoint_transcript_start": 999,
+  "transcript_lines_at_start": 999,
+  "token_usage": {
+    "input_tokens": 108,
+    "cache_creation_tokens": 92735,
+    "cache_read_tokens": 5023327,
+    "output_tokens": 10244,
+    "api_call_count": 55
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-16T08:02:40.551285Z",
+    "agent_lines": 102,
+    "human_added": 295,
+    "human_modified": 27,
+    "human_removed": 0,
+    "total_committed": 424,
+    "agent_percentage": 24.056603773584907
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/0475faa1-06c4-4183-b2d4-71e5ee114c54.jsonl"
+}

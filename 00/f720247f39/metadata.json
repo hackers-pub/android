@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "00f720247f39",
+  "strategy": "manual-commit",
+  "branch": "feature/redesign-entire-screen",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".claude/settings.local.json",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/data/local/PreferencesManager.kt",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/ui/components/InAppBrowserUriHandler.kt",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/ui/components/MarkdownRenderer.kt",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/ui/components/ReactionPicker.kt",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/ui/components/UrlOpener.kt",
+    ".claude/worktrees/agent-a51ec391/docs/superpowers/specs/2026-03-19-android-redesign-design.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/00/f720247f39/0/metadata.json",
+      "transcript": "/00/f720247f39/0/full.jsonl",
+      "context": "/00/f720247f39/0/context.md",
+      "content_hash": "/00/f720247f39/0/content_hash.txt",
+      "prompt": "/00/f720247f39/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 28,
+    "cache_creation_tokens": 21149,
+    "cache_read_tokens": 2875409,
+    "output_tokens": 5302,
+    "api_call_count": 16
+  }
+}

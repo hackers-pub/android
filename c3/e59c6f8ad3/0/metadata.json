@@ -1,0 +1,39 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "c3e59c6f8ad3",
+  "session_id": "948a3954-6196-4010-8a1f-80c4cef48fcc",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-18T18:35:55.093442Z",
+  "branch": "feat/timeline-always-fresh",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/data/repository/HackersPubRepository.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/notifications/NotificationsScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/notifications/NotificationsViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/search/SearchScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/search/SearchViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/timeline/TimelineScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/timeline/TimelineViewModel.kt"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "28c98996-7081-49fa-a296-c6633c370697",
+  "checkpoint_transcript_start": 1697,
+  "transcript_lines_at_start": 1697,
+  "token_usage": {
+    "input_tokens": 53,
+    "cache_creation_tokens": 20962,
+    "cache_read_tokens": 13847693,
+    "output_tokens": 12294,
+    "api_call_count": 51
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-18T18:35:53.355645Z",
+    "agent_lines": 121,
+    "human_added": 43,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 164,
+    "agent_percentage": 73.78048780487805
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/948a3954-6196-4010-8a1f-80c4cef48fcc.jsonl"
+}

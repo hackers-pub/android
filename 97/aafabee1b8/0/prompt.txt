@@ -1,0 +1,337 @@
+# Create Pull Request
+
+Create a pull request with auto-generated title and body from commits.
+
+**Arguments**: `` (optional base branch, defaults to `main`)
+
+## Instructions
+
+1. Parse the base branch:
+   - If `` is provided, use it as the base branch
+   - Otherwise, default to `main`
+
+2. Gather information about the current branch:
+   - Run `git branch --show-current` to get the current branch name
+   - Run `git log <base>..HEAD --oneline` to see commits not in base
+   - Run `git diff <base>...HEAD --stat` to see changed files summary
+
+3. Analyze the commits to generate:
+   - **Title**: A clear, descriptive summary of what the PR does
+   - **Body**: A 2-3 sentence summary explaining the key changes and why they were made
+
+4. Check if branch needs to be pushed:
+   - Run `git status` to check if ahead of remote
+   - Push with `git push -u origin <branch>` if needed
+
+5. Create the PR using:
+```bash
+gh pr create --base <base-branch> --title "the pr title" --body "$(cat <<'EOF'
+## Summary
+<2-3 sentence summary explaining what changed and why>
+EOF
+)"
+```
+
+6. Return the PR URL to the user.
+
+## Examples
+- `/ghpr` - Create PR against main
+- `/ghpr develop` - Create PR against develop branch
+
+## Important
+- Compare against the specified base branch (default: main)
+- If there are no commits ahead of base, inform the user
+- Don't push to the base branch directly - warn if on base branch
+
+---
+
+Wait, it should point at hackerspub/android.
+
+---
+
+Okay, it was hackers-pub
+
+---
+
+Okay, I forked
+
+---
+
+<bash-input>git switch main</bash-input>
+
+---
+
+<bash-stdout>Your branch is up to date with 'origin/main'.
+Switched to branch 'main'</bash-stdout><bash-stderr></bash-stderr>
+
+---
+
+<bash-input>git switch -c fix/html-highlighting</bash-input>
+
+---
+
+<bash-stdout>Switched to a new branch 'fix/html-highlighting'</bash-stdout><bash-stderr></bash-stderr>
+
+---
+
+For rendering mention, hashtag, link, and so all, Could you hightlight differently? Reference ../hackerspub/web-next
+
+---
+
+<bash-input>git pull upstream main</bash-input>
+
+---
+
+<bash-stdout></bash-stdout><bash-stderr>error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+</bash-stderr>
+
+---
+
+# Create Commit
+
+Create a commit with auto-generated message from staged changes.
+
+**Arguments**: `` (optional commit message override)
+
+## Instructions
+
+1. Check for staged changes:
+   - Run `git diff --cached --stat` to see staged files summary
+   - If no staged changes, inform the user and suggest `git add`
+
+2. Gather information about staged changes:
+   - Run `git diff --cached` to see the actual diff
+   - Run `git status` to see overall status
+
+3. Generate commit message:
+   - If `` is provided, use it as the commit message
+   - Otherwise, analyze the diff to generate:
+     - **First line**: Short summary (50 chars max) in imperative mood (e.g., "Add feature", "Fix bug", "Update config")
+     - **Body** (if needed): 2-3 sentence explanation of why the change was made
+
+4. Create the commit using:
+```bash
+git commit -m "$(cat <<'EOF'
+<short summary>
+
+<optional 2-3 sentence explanation>
+EOF
+)"
+```
+
+5. Show the commit result with `git log -1 --oneline`
+
+## Examples
+- `/commit` - Auto-generate commit message from staged changes
+- `/commit "Fix typo in README"` - Use provided message
+
+## Important
+- Use imperative mood: "Add" not "Added", "Fix" not "Fixed"
+- Keep first line under 50 characters
+- Don't commit if there are no staged changes
+- Warn if committing sensitive files (.env, credentials, etc.)
+
+---
+
+<bash-input>git pull upstream main</bash-input>
+
+---
+
+<bash-stdout>From github.com:hackers-pub/android
+ * branch            main       -> FETCH_HEAD
+ * [new branch]      main       -> upstream/main
+Rebasing (1/1)Successfully rebased and updated refs/heads/fix/html-highlighting.</bash-stdout><bash-stderr></bash-stderr>
+
+---
+
+# Create Pull Request
+
+Create a pull request with auto-generated title and body from commits.
+
+**Arguments**: `` (optional base branch, defaults to `main`)
+
+## Instructions
+
+1. Parse the base branch:
+   - If `` is provided, use it as the base branch
+   - Otherwise, default to `main`
+
+2. Gather information about the current branch:
+   - Run `git branch --show-current` to get the current branch name
+   - Run `git log <base>..HEAD --oneline` to see commits not in base
+   - Run `git diff <base>...HEAD --stat` to see changed files summary
+
+3. Analyze the commits to generate:
+   - **Title**: A clear, descriptive summary of what the PR does
+   - **Body**: A 2-3 sentence summary explaining the key changes and why they were made
+
+4. Check if branch needs to be pushed:
+   - Run `git status` to check if ahead of remote
+   - Push with `git push -u origin <branch>` if needed
+
+5. Create the PR using:
+```bash
+gh pr create --base <base-branch> --title "the pr title" --body "$(cat <<'EOF'
+## Summary
+<2-3 sentence summary explaining what changed and why>
+EOF
+)"
+```
+
+6. Return the PR URL to the user.
+
+## Examples
+- `/ghpr` - Create PR against main
+- `/ghpr develop` - Create PR against develop branch
+
+## Important
+- Compare against the specified base branch (default: main)
+- If there are no commits ahead of base, inform the user
+- Don't push to the base branch directly - warn if on base branch
+
+---
+
+Could you give me build script which install in my cellphone?
+
+---
+
+<bash-input>git switch main</bash-input>
+
+---
+
+<bash-stdout>Your branch is up to date with 'origin/main'.
+Switched to branch 'main'</bash-stdout><bash-stderr></bash-stderr>
+
+---
+
+git pull upstream main
+
+---
+
+<bash-input>git push</bash-input>
+
+---
+
+<bash-stdout>To github.com:malkoG/hackerspub-android.git
+   f5ca675..984cc02  main -> main</bash-stdout><bash-stderr></bash-stderr>
+
+---
+
+<bash-input>git switch -c fix/article-rendering</bash-input>
+
+---
+
+<bash-stdout>Switched to a new branch 'fix/article-rendering'</bash-stdout><bash-stderr></bash-stderr>
+
+---
+
+For rendering article, Could you render article card differently, and create the article detail page? See ../hackerspub/web-next
+
+---
+
+# Create Commit
+
+Create a commit with auto-generated message from staged changes.
+
+**Arguments**: `` (optional commit message override)
+
+## Instructions
+
+1. Check for staged changes:
+   - Run `git diff --cached --stat` to see staged files summary
+   - If no staged changes, inform the user and suggest `git add`
+
+2. Gather information about staged changes:
+   - Run `git diff --cached` to see the actual diff
+   - Run `git status` to see overall status
+
+3. Generate commit message:
+   - If `` is provided, use it as the commit message
+   - Otherwise, analyze the diff to generate:
+     - **First line**: Short summary (50 chars max) in imperative mood (e.g., "Add feature", "Fix bug", "Update config")
+     - **Body** (if needed): 2-3 sentence explanation of why the change was made
+
+4. Create the commit using:
+```bash
+git commit -m "$(cat <<'EOF'
+<short summary>
+
+<optional 2-3 sentence explanation>
+EOF
+)"
+```
+
+5. Show the commit result with `git log -1 --oneline`
+
+## Examples
+- `/commit` - Auto-generate commit message from staged changes
+- `/commit "Fix typo in README"` - Use provided message
+
+## Important
+- Use imperative mood: "Add" not "Added", "Fix" not "Fixed"
+- Keep first line under 50 characters
+- Don't commit if there are no staged changes
+- Warn if committing sensitive files (.env, credentials, etc.)
+
+---
+
+For article rendering or note rendering, we need to full support for code snippet/heading/list/numbered list. Could you also considerate them?
+
+---
+
+[Request interrupted by user]
+
+---
+
+Continue from where you left off.
+
+---
+
+For article rendering or note rendering, we need to full support for code snippet/heading/list/numbered list. Could you also considerate them?
+
+---
+
+# Create Commit
+
+Create a commit with auto-generated message from staged changes.
+
+**Arguments**: `` (optional commit message override)
+
+## Instructions
+
+1. Check for staged changes:
+   - Run `git diff --cached --stat` to see staged files summary
+   - If no staged changes, inform the user and suggest `git add`
+
+2. Gather information about staged changes:
+   - Run `git diff --cached` to see the actual diff
+   - Run `git status` to see overall status
+
+3. Generate commit message:
+   - If `` is provided, use it as the commit message
+   - Otherwise, analyze the diff to generate:
+     - **First line**: Short summary (50 chars max) in imperative mood (e.g., "Add feature", "Fix bug", "Update config")
+     - **Body** (if needed): 2-3 sentence explanation of why the change was made
+
+4. Create the commit using:
+```bash
+git commit -m "$(cat <<'EOF'
+<short summary>
+
+<optional 2-3 sentence explanation>
+EOF
+)"
+```
+
+5. Show the commit result with `git log -1 --oneline`
+
+## Examples
+- `/commit` - Auto-generate commit message from staged changes
+- `/commit "Fix typo in README"` - Use provided message
+
+## Important
+- Use imperative mood: "Add" not "Added", "Fix" not "Fixed"
+- Keep first line under 50 characters
+- Don't commit if there are no staged changes
+- Warn if committing sensitive files (.env, credentials, etc.)

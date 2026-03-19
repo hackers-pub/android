@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "f3258cb84825",
+  "session_id": "8a9ec257-cad9-4634-866d-d0bffa235e37",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-19T05:22:10.387341Z",
+  "branch": "feature/redesign-entire-screen",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeScreen.kt"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "136c26ff-ef64-4205-baa0-7a28f9ea354e",
+  "checkpoint_transcript_start": 1307,
+  "transcript_lines_at_start": 1307,
+  "token_usage": {
+    "input_tokens": 11,
+    "cache_creation_tokens": 8434,
+    "cache_read_tokens": 1751729,
+    "output_tokens": 1986,
+    "api_call_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-19T05:22:08.661338Z",
+    "agent_lines": 12,
+    "human_added": 50,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 62,
+    "agent_percentage": 19.35483870967742
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/8a9ec257-cad9-4634-866d-d0bffa235e37.jsonl"
+}

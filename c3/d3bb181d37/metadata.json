@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "c3d3bb181d37",
+  "strategy": "manual-commit",
+  "branch": "feat/delete-post",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailViewModel.kt"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c3/d3bb181d37/0/metadata.json",
+      "transcript": "/c3/d3bb181d37/0/full.jsonl",
+      "context": "/c3/d3bb181d37/0/context.md",
+      "content_hash": "/c3/d3bb181d37/0/content_hash.txt",
+      "prompt": "/c3/d3bb181d37/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 21,
+    "cache_creation_tokens": 21182,
+    "cache_read_tokens": 2036937,
+    "output_tokens": 8134,
+    "api_call_count": 18
+  }
+}

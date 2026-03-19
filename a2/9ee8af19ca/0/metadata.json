@@ -1,0 +1,39 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "a29ee8af19ca",
+  "session_id": "8a9ec257-cad9-4634-866d-d0bffa235e37",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-19T04:40:47.491562Z",
+  "branch": "feature/redesign-entire-screen",
+  "checkpoints_count": 9,
+  "files_touched": [
+    ".gitignore",
+    ".superpowers/brainstorm/41721-1773893996/accent-color-v2.html",
+    ".superpowers/brainstorm/41721-1773893996/accent-color.html",
+    ".superpowers/brainstorm/41721-1773893996/dark-mode.html",
+    ".superpowers/brainstorm/41721-1773893996/navigation-style.html",
+    ".superpowers/brainstorm/41721-1773893996/profile-layout.html",
+    ".superpowers/brainstorm/41721-1773893996/timeline-style.html",
+    ".superpowers/brainstorm/41721-1773893996/waiting.html",
+    "docs/superpowers/specs/2026-03-19-android-redesign-design.md"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "fc52d910-61c0-4ed3-a7d1-3abd69e3f8fb",
+  "token_usage": {
+    "input_tokens": 71,
+    "cache_creation_tokens": 83950,
+    "cache_read_tokens": 2992976,
+    "output_tokens": 49247,
+    "api_call_count": 47
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-19T04:40:46.743643Z",
+    "agent_lines": 321,
+    "human_added": 0,
+    "human_modified": 395,
+    "human_removed": 743,
+    "total_committed": 716,
+    "agent_percentage": 44.832402234636874
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/8a9ec257-cad9-4634-866d-d0bffa235e37.jsonl"
+}

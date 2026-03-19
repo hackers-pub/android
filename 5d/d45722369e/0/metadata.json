@@ -1,0 +1,42 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "5dd45722369e",
+  "session_id": "948a3954-6196-4010-8a1f-80c4cef48fcc",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-18T15:45:48.348879Z",
+  "branch": "feat/share-url-fallback",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/graphql/pub/hackers/android/operations.graphql",
+    "app/src/main/java/pub/hackers/android/data/repository/HackersPubRepository.kt",
+    "app/src/main/java/pub/hackers/android/domain/model/Models.kt",
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/PostCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailViewModel.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "fab92a43-2db1-48cf-ac24-3b461bec4f0b",
+  "checkpoint_transcript_start": 625,
+  "transcript_lines_at_start": 625,
+  "token_usage": {
+    "input_tokens": 102,
+    "cache_creation_tokens": 67134,
+    "cache_read_tokens": 18574167,
+    "output_tokens": 32246,
+    "api_call_count": 100
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-18T15:45:47.130692Z",
+    "agent_lines": 645,
+    "human_added": 42,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 687,
+    "agent_percentage": 93.88646288209607
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/948a3954-6196-4010-8a1f-80c4cef48fcc.jsonl"
+}

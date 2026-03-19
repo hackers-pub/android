@@ -1,0 +1,39 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "00f720247f39",
+  "session_id": "8a9ec257-cad9-4634-866d-d0bffa235e37",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-19T05:20:06.322696Z",
+  "branch": "feature/redesign-entire-screen",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".claude/settings.local.json",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/data/local/PreferencesManager.kt",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/ui/components/InAppBrowserUriHandler.kt",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/ui/components/MarkdownRenderer.kt",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/ui/components/ReactionPicker.kt",
+    ".claude/worktrees/agent-a51ec391/app/src/main/java/pub/hackers/android/ui/components/UrlOpener.kt",
+    ".claude/worktrees/agent-a51ec391/docs/superpowers/specs/2026-03-19-android-redesign-design.md"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "a3182dd0-75fc-4054-abd3-2bd7f2dd2806",
+  "checkpoint_transcript_start": 1061,
+  "transcript_lines_at_start": 1061,
+  "token_usage": {
+    "input_tokens": 28,
+    "cache_creation_tokens": 21149,
+    "cache_read_tokens": 2875409,
+    "output_tokens": 5302,
+    "api_call_count": 16
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-19T05:20:04.707779Z",
+    "agent_lines": 0,
+    "human_added": 80545,
+    "human_modified": 50,
+    "human_removed": 0,
+    "total_committed": 80545,
+    "agent_percentage": 0
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/8a9ec257-cad9-4634-866d-d0bffa235e37.jsonl"
+}

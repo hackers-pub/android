@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "5dd45722369e",
+  "strategy": "manual-commit",
+  "branch": "feat/share-url-fallback",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/graphql/pub/hackers/android/operations.graphql",
+    "app/src/main/java/pub/hackers/android/data/repository/HackersPubRepository.kt",
+    "app/src/main/java/pub/hackers/android/domain/model/Models.kt",
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/PostCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/compose/ComposeViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailViewModel.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/5d/d45722369e/0/metadata.json",
+      "transcript": "/5d/d45722369e/0/full.jsonl",
+      "context": "/5d/d45722369e/0/context.md",
+      "content_hash": "/5d/d45722369e/0/content_hash.txt",
+      "prompt": "/5d/d45722369e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 102,
+    "cache_creation_tokens": 67134,
+    "cache_read_tokens": 18574167,
+    "output_tokens": 32246,
+    "api_call_count": 100
+  }
+}

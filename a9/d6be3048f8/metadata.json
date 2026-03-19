@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "a9d6be3048f8",
+  "strategy": "manual-commit",
+  "branch": "feat/article-detail-view",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/build.gradle.kts",
+    "app/src/main/java/pub/hackers/android/data/local/PreferencesManager.kt",
+    "app/src/main/java/pub/hackers/android/ui/AppViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/InAppBrowserUriHandler.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/UrlOpener.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/postdetail/PostDetailScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/settings/SettingsScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/settings/SettingsViewModel.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a9/d6be3048f8/0/metadata.json",
+      "transcript": "/a9/d6be3048f8/0/full.jsonl",
+      "context": "/a9/d6be3048f8/0/context.md",
+      "content_hash": "/a9/d6be3048f8/0/content_hash.txt",
+      "prompt": "/a9/d6be3048f8/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 44,
+    "cache_creation_tokens": 13983,
+    "cache_read_tokens": 18489519,
+    "output_tokens": 8744,
+    "api_call_count": 42
+  }
+}

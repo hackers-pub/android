@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "0a9607db7302",
+  "session_id": "948a3954-6196-4010-8a1f-80c4cef48fcc",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-19T01:40:03.165342Z",
+  "branch": "feat/empty-states",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/src/main/java/pub/hackers/android/data/local/PreferencesManager.kt",
+    "app/src/main/java/pub/hackers/android/ui/HackersPubApp.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/ErrorMessage.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/HtmlContent.kt",
+    "app/src/main/java/pub/hackers/android/ui/components/PostCard.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/notifications/NotificationsScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/search/SearchScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/search/SearchViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/settings/SettingsScreen.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/settings/SettingsViewModel.kt",
+    "app/src/main/java/pub/hackers/android/ui/screens/timeline/TimelineScreen.kt",
+    "app/src/main/res/values/strings.xml"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "43fb5dff-f0bf-4b10-91e8-0138b4f0ee3a",
+  "checkpoint_transcript_start": 4319,
+  "transcript_lines_at_start": 4319,
+  "token_usage": {
+    "input_tokens": 55,
+    "cache_creation_tokens": 18100,
+    "cache_read_tokens": 24204627,
+    "output_tokens": 12707,
+    "api_call_count": 53
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-19T01:39:59.782463Z",
+    "agent_lines": 142,
+    "human_added": 44,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 186,
+    "agent_percentage": 76.34408602150538
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android/948a3954-6196-4010-8a1f-80c4cef48fcc.jsonl"
+}
