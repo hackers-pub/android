@@ -1,0 +1,117 @@
+Bump up to v1.0.1, and auto increment version code
+
+---
+
+# Create Commit
+
+Create a commit with auto-generated message from staged changes.
+
+**Arguments**: `` (optional commit message override)
+
+## Instructions
+
+1. Check for staged changes:
+   - Run `git diff --cached --stat` to see staged files summary
+   - If no staged changes, inform the user and suggest `git add`
+
+2. Gather information about staged changes:
+   - Run `git diff --cached` to see the actual diff
+   - Run `git status` to see overall status
+
+3. Generate commit message:
+   - If `` is provided, use it as the commit message
+   - Otherwise, analyze the diff to generate:
+     - **First line**: Short summary (50 chars max) in imperative mood (e.g., "Add feature", "Fix bug", "Update config")
+     - **Body** (if needed): 2-3 sentence explanation of why the change was made
+
+4. Create the commit using:
+```bash
+git commit -m "$(cat <<'EOF'
+<short summary>
+
+<optional 2-3 sentence explanation>
+EOF
+)"
+```
+
+5. Show the commit result with `git log -1 --oneline`
+
+## Examples
+- `/commit` - Auto-generate commit message from staged changes
+- `/commit "Fix typo in README"` - Use provided message
+
+## Important
+- Use imperative mood: "Add" not "Added", "Fix" not "Fixed"
+- Keep first line under 50 characters
+- Don't commit if there are no staged changes
+- Warn if committing sensitive files (.env, credentials, etc.)
+
+---
+
+Base directory for this skill: /Users/kodingwarrior/.claude/skills/release-tag
+
+# Release Tag
+
+Create an annotated git tag based on the version in `package.json`.
+
+**Arguments**: `<message>` (optional — annotation message for the tag)
+
+## Instructions
+
+### Phase 1: Read Version
+
+1. Read `package.json` and extract the `version` field.
+2. Construct the tag name as `v{version}` (e.g., `v0.3.0`).
+
+### Phase 2: Validate
+
+1. Check if the tag already exists:
+   ```bash
+   git tag --list 'v{version}'
+   ```
+   If it exists, inform the user and halt. Suggest bumping the version first.
+
+2. Check for uncommitted changes:
+   ```bash
+   git status --porcelain
+   ```
+   If there are uncommitted changes, warn the user and ask whether to proceed.
+
+3. Show the user what will be tagged:
+   ```bash
+   git log -1 --oneline
+   ```
+
+### Phase 3: Confirm
+
+Present the tag details and ask the user to confirm:
+- **Tag**: `v{version}`
+- **Commit**: `{short hash} {message}`
+- **Message**: The annotation message (argument or auto-generated)
+
+If no `<message>` argument was provided, use:
+> Release v{version}
+
+### Phase 4: Create Tag
+
+Create an annotated tag:
+```bash
+git tag -a v{version} -m "{message}"
+```
+
+### Phase 5: Push (Optional)
+
+Ask the user if they want to push the tag:
+```bash
+git push origin v{version}
+```
+
+Only push if the user confirms. Display the result.
+
+---
+
+[Request interrupted by user]
+
+---
+
+Okay correction. not 1.0.1, 1.1.0
