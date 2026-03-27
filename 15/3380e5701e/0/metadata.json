@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "153380e5701e",
+  "session_id": "ee972132-3827-437f-8088-480794067b7f",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-27T06:08:50.079618Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/build.gradle.kts"
+  ],
+  "agent": "Claude Code",
+  "token_usage": {
+    "input_tokens": 13,
+    "cache_creation_tokens": 10530,
+    "cache_read_tokens": 198136,
+    "output_tokens": 1052,
+    "api_call_count": 10
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-27T06:08:50.038265Z",
+    "agent_lines": 2,
+    "human_added": 19,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 21,
+    "agent_percentage": 9.523809523809524
+  },
+  "transcript_path": ".claude/projects/-Users-kodingwarrior-fediverse-hackerspub-android-prod/ee972132-3827-437f-8088-480794067b7f.jsonl"
+}
