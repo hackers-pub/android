@@ -1,0 +1,128 @@
+Base directory for this skill: /Users/kodingwarrior/.claude/plugins/cache/zipsa/minimalism-workflow/0.1.0/skills/release-tag
+
+# Release Tag
+
+Create an annotated git tag based on the version in `package.json`.
+
+**Arguments**: `<message>` (optional — annotation message for the tag)
+
+## Instructions
+
+### Phase 1: Read Version
+
+1. Read `package.json` and extract the `version` field.
+2. Construct the tag name as `v{version}` (e.g., `v0.3.0`).
+
+### Phase 2: Validate
+
+1. Check if the tag already exists:
+   ```bash
+   git tag --list 'v{version}'
+   ```
+   If it exists, inform the user and halt. Suggest bumping the version first.
+
+2. Check for uncommitted changes:
+   ```bash
+   git status --porcelain
+   ```
+   If there are uncommitted changes, warn the user and ask whether to proceed.
+
+3. Show the user what will be tagged:
+   ```bash
+   git log -1 --oneline
+   ```
+
+### Phase 3: Confirm
+
+Present the tag details and ask the user to confirm:
+- **Tag**: `v{version}`
+- **Commit**: `{short hash} {message}`
+- **Message**: The annotation message (argument or auto-generated)
+
+If no `<message>` argument was provided, use:
+> Release v{version}
+
+### Phase 4: Create Tag
+
+Create an annotated tag:
+```bash
+git tag -a v{version} -m "{message}"
+```
+
+### Phase 5: Push (Optional)
+
+Ask the user if they want to push the tag:
+```bash
+git push origin v{version}
+```
+
+Only push if the user confirms. Display the result.
+
+---
+
+Base directory for this skill: /Users/kodingwarrior/.claude/plugins/cache/zipsa/minimalism-workflow/0.1.0/skills/release-tag
+
+# Release Tag
+
+Create an annotated git tag based on the version in `package.json`.
+
+**Arguments**: `<message>` (optional — annotation message for the tag)
+
+## Instructions
+
+### Phase 1: Read Version
+
+1. Read `package.json` and extract the `version` field.
+2. Construct the tag name as `v{version}` (e.g., `v0.3.0`).
+
+### Phase 2: Validate
+
+1. Check if the tag already exists:
+   ```bash
+   git tag --list 'v{version}'
+   ```
+   If it exists, inform the user and halt. Suggest bumping the version first.
+
+2. Check for uncommitted changes:
+   ```bash
+   git status --porcelain
+   ```
+   If there are uncommitted changes, warn the user and ask whether to proceed.
+
+3. Show the user what will be tagged:
+   ```bash
+   git log -1 --oneline
+   ```
+
+### Phase 3: Confirm
+
+Present the tag details and ask the user to confirm:
+- **Tag**: `v{version}`
+- **Commit**: `{short hash} {message}`
+- **Message**: The annotation message (argument or auto-generated)
+
+If no `<message>` argument was provided, use:
+> Release v{version}
+
+### Phase 4: Create Tag
+
+Create an annotated tag:
+```bash
+git tag -a v{version} -m "{message}"
+```
+
+### Phase 5: Push (Optional)
+
+Ask the user if they want to push the tag:
+```bash
+git push origin v{version}
+```
+
+Only push if the user confirms. Display the result.
+
+
+ARGUMENTS: v1.2.0
+
+---
+
+2
