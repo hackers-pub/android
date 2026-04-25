@@ -861,6 +861,7 @@ mutation SaveArticleDraft($title: String!, $content: Markdown!, $tags: [String!]
                 id
                 title
                 content
+                contentHtml
                 tags
                 created
                 updated
@@ -912,6 +913,7 @@ query ArticleDraft($id: ID!) {
         id
         title
         content
+        contentHtml
         tags
         created
         updated
@@ -974,4 +976,52 @@ mutation UpdateAccount($input: UpdateAccountInput!) {
 
 mutation MarkNotificationsAsRead {
     markNotificationsAsRead
+}
+
+query ArticleForEdit($id: ID!) {
+    node(id: $id) {
+        ... on Article {
+            id
+            tags
+            allowLlmTranslation
+            contents {
+                title
+                rawContent
+                language
+                originalLanguage
+            }
+        }
+    }
+}
+
+mutation UpdateArticle(
+    $articleId: ID!,
+    $title: String,
+    $content: Markdown,
+    $tags: [String!],
+    $language: Locale,
+    $allowLlmTranslation: Boolean
+) {
+    updateArticle(input: {
+        articleId: $articleId,
+        title: $title,
+        content: $content,
+        tags: $tags,
+        language: $language,
+        allowLlmTranslation: $allowLlmTranslation
+    }) {
+        ... on UpdateArticlePayload {
+            article {
+                id
+                name
+                url
+            }
+        }
+        ... on InvalidInputError {
+            inputPath
+        }
+        ... on NotAuthenticatedError {
+            notAuthenticated
+        }
+    }
 }

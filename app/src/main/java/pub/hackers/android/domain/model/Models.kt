@@ -276,6 +276,7 @@ data class ArticleDraft(
     val id: String,
     val title: String,
     val content: String,
+    val contentHtml: String,
     val tags: List<String>,
     val created: Instant,
     val updated: Instant
@@ -286,6 +287,16 @@ data class PublishedArticle(
     val id: String,
     val name: String?,
     val url: String?
+)
+
+@Immutable
+data class EditableArticle(
+    val id: String,
+    val title: String,
+    val content: String,
+    val tags: List<String>,
+    val language: String,
+    val allowLlmTranslation: Boolean
 )
 
 @Immutable

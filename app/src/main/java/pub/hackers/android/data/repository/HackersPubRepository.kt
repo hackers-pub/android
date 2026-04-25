@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import pub.hackers.android.domain.model.*
 import pub.hackers.android.graphql.ArticleDraftQuery
 import pub.hackers.android.graphql.ArticleDraftsQuery
+import pub.hackers.android.graphql.ArticleForEditQuery
 import pub.hackers.android.graphql.ActorArticlesQuery
 import pub.hackers.android.graphql.ActorByHandleQuery
 import pub.hackers.android.graphql.ActorNotesQuery
@@ -55,6 +56,7 @@ import pub.hackers.android.graphql.UnfollowActorMutation
 import pub.hackers.android.graphql.UnbookmarkPostMutation
 import pub.hackers.android.graphql.UnsharePostMutation
 import pub.hackers.android.graphql.UpdateAccountMutation
+import pub.hackers.android.graphql.UpdateArticleMutation
 import pub.hackers.android.graphql.ViewerQuery
 import pub.hackers.android.graphql.type.AccountLinkInput
 import pub.hackers.android.graphql.type.UpdateAccountInput
@@ -1305,6 +1307,7 @@ class HackersPubRepository @Inject constructor(
                                 id = draft.id,
                                 title = draft.title,
                                 content = draft.content.toString(),
+                                contentHtml = draft.contentHtml.toString(),
                                 tags = draft.tags,
                                 created = Instant.parse(draft.created.toString()),
                                 updated = Instant.parse(draft.updated.toString())
@@ -1407,6 +1410,7 @@ class HackersPubRepository @Inject constructor(
                         id = node.id,
                         title = node.title,
                         content = node.content.toString(),
+                        contentHtml = "",
                         tags = node.tags,
                         created = Instant.parse(node.created.toString()),
                         updated = Instant.parse(node.updated.toString())
@@ -1435,11 +1439,89 @@ class HackersPubRepository @Inject constructor(
                         id = draft.id,
                         title = draft.title,
                         content = draft.content.toString(),
+                        contentHtml = draft.contentHtml.toString(),
                         tags = draft.tags,
                         created = Instant.parse(draft.created.toString()),
                         updated = Instant.parse(draft.updated.toString())
                     )
                 )
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getEditableArticle(articleId: String): Result<EditableArticle> {
+        return try {
+            val response = apolloClient.query(ArticleForEditQuery(articleId))
+                .fetchPolicy(FetchPolicy.NetworkOnly)
+                .execute()
+
+            if (response.hasErrors()) {
+                Result.failure(Exception(response.errors?.firstOrNull()?.message ?: "Unknown error"))
+            } else {
+                val article = response.data?.node?.onArticle
+                    ?: return Result.failure(Exception("Article not found"))
+                val original = article.contents.firstOrNull { it.originalLanguage == null }
+                    ?: article.contents.firstOrNull()
+                    ?: return Result.failure(Exception("Article content not found"))
+                Result.success(
+                    EditableArticle(
+                        id = article.id,
+                        title = original.title,
+                        content = original.rawContent.toString(),
+                        tags = article.tags,
+                        language = original.language.toString(),
+                        allowLlmTranslation = article.allowLlmTranslation
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateArticle(
+        articleId: String,
+        title: String,
+        content: String,
+        tags: List<String>,
+        language: String,
+        allowLlmTranslation: Boolean
+    ): Result<PublishedArticle> {
+        return try {
+            val response = apolloClient.mutation(
+                UpdateArticleMutation(
+                    articleId = articleId,
+                    title = Optional.present(title),
+                    content = Optional.present(content),
+                    tags = Optional.present(tags),
+                    language = Optional.present(language),
+                    allowLlmTranslation = Optional.present(allowLlmTranslation)
+                )
+            ).execute()
+
+            if (response.hasErrors()) {
+                Result.failure(Exception(response.errors?.firstOrNull()?.message ?: "Unknown error"))
+            } else {
+                val result = response.data?.updateArticle
+                when {
+                    result?.onUpdateArticlePayload != null -> {
+                        val article = result.onUpdateArticlePayload.article
+                        Result.success(
+                            PublishedArticle(
+                                id = article.id,
+                                name = article.name,
+                                url = article.url?.toString()
+                            )
+                        )
+                    }
+                    result?.onInvalidInputError != null ->
+                        Result.failure(Exception("Invalid input: ${result.onInvalidInputError.inputPath}"))
+                    result?.onNotAuthenticatedError != null ->
+                        Result.failure(Exception("Not authenticated"))
+                    else -> Result.failure(Exception("Unknown error"))
+                }
             }
         } catch (e: Exception) {
             Result.failure(e)

@@ -21,6 +21,9 @@ data class ComposeArticleUiState(
     val content: String = "",
     val tags: String = "",
     val draftId: String? = null,
+    val articleId: String? = null,
+    val isEditMode: Boolean = false,
+    val isLoadingArticle: Boolean = false,
     val isSaving: Boolean = false,
     val isSaved: Boolean = false,
     val slug: String = "",
@@ -31,6 +34,10 @@ data class ComposeArticleUiState(
     val isPublished: Boolean = false,
     val publishedArticleId: String? = null,
     val publishedArticleUrl: String? = null,
+    val isPreview: Boolean = false,
+    val previewHtml: String = "",
+    val previewContent: String? = null,
+    val isLoadingPreview: Boolean = false,
     val error: String? = null
 )
 
@@ -53,13 +60,82 @@ class ComposeArticleViewModel @Inject constructor(
                             content = draft.content,
                             tags = draft.tags.joinToString(", "),
                             draftId = draft.id,
-                            slug = generateSlug(draft.title)
+                            slug = generateSlug(draft.title),
+                            previewHtml = draft.contentHtml,
+                            previewContent = draft.content
                         )
                     }
                     detectLanguage(draft.content)
                 }
                 .onFailure { error ->
                     _uiState.update { it.copy(error = error.message) }
+                }
+        }
+    }
+
+    fun loadArticleForEdit(articleId: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingArticle = true, isEditMode = true, articleId = articleId) }
+            repository.getEditableArticle(articleId)
+                .onSuccess { article ->
+                    _uiState.update {
+                        it.copy(
+                            title = article.title,
+                            content = article.content,
+                            tags = article.tags.joinToString(", "),
+                            language = article.language.ifBlank { it.language },
+                            allowLlmTranslation = article.allowLlmTranslation,
+                            isLoadingArticle = false
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(error = error.message, isLoadingArticle = false)
+                    }
+                }
+        }
+    }
+
+    fun updateArticle() {
+        val state = _uiState.value
+        val articleId = state.articleId ?: return
+        if (state.title.isBlank()) {
+            _uiState.update { it.copy(error = "Title is required") }
+            return
+        }
+        if (state.isPublishing) return
+
+        val tagsList = state.tags
+            .split(",")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isPublishing = true, error = null) }
+
+            repository.updateArticle(
+                articleId = articleId,
+                title = state.title,
+                content = state.content,
+                tags = tagsList,
+                language = state.language,
+                allowLlmTranslation = state.allowLlmTranslation
+            )
+                .onSuccess { article ->
+                    _uiState.update {
+                        it.copy(
+                            isPublishing = false,
+                            isPublished = true,
+                            publishedArticleId = article.id,
+                            publishedArticleUrl = article.url
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(error = error.message, isPublishing = false)
+                    }
                 }
         }
     }
@@ -94,6 +170,51 @@ class ComposeArticleViewModel @Inject constructor(
         _uiState.update { it.copy(allowLlmTranslation = allow) }
     }
 
+    fun togglePreview() {
+        val state = _uiState.value
+        if (state.isPreview) {
+            _uiState.update { it.copy(isPreview = false) }
+            return
+        }
+        if (state.title.isBlank()) {
+            _uiState.update { it.copy(error = "Title is required") }
+            return
+        }
+        if (state.content == state.previewContent && state.previewHtml.isNotEmpty()) {
+            _uiState.update { it.copy(isPreview = true) }
+            return
+        }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingPreview = true, error = null) }
+            val tagsList = state.tags
+                .split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+            repository.saveArticleDraft(
+                title = state.title,
+                content = state.content,
+                tags = tagsList,
+                id = state.draftId
+            )
+                .onSuccess { draft ->
+                    _uiState.update {
+                        it.copy(
+                            draftId = draft.id,
+                            previewHtml = draft.contentHtml,
+                            previewContent = draft.content,
+                            isPreview = true,
+                            isLoadingPreview = false
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(error = error.message, isLoadingPreview = false)
+                    }
+                }
+        }
+    }
+
     fun saveDraft() {
         val state = _uiState.value
         if (state.title.isBlank()) {
@@ -121,7 +242,9 @@ class ComposeArticleViewModel @Inject constructor(
                         it.copy(
                             isSaving = false,
                             isSaved = true,
-                            draftId = draft.id
+                            draftId = draft.id,
+                            previewHtml = draft.contentHtml,
+                            previewContent = draft.content
                         )
                     }
                 }

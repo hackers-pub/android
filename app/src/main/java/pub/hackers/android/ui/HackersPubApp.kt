@@ -139,9 +139,13 @@ sealed class DetailScreen(val route: String) {
         }
     }
     data object RecommendedActors : DetailScreen("recommended-actors")
-    data object ComposeArticle : DetailScreen("compose-article?draftId={draftId}") {
-        fun createRoute(draftId: String? = null): String {
-            return if (draftId != null) "compose-article?draftId=$draftId" else "compose-article"
+    data object ComposeArticle : DetailScreen("compose-article?draftId={draftId}&articleId={articleId}") {
+        fun createRoute(draftId: String? = null, articleId: String? = null): String {
+            val params = buildList {
+                if (draftId != null) add("draftId=$draftId")
+                if (articleId != null) add("articleId=$articleId")
+            }
+            return if (params.isEmpty()) "compose-article" else "compose-article?" + params.joinToString("&")
         }
     }
     data object Drafts : DetailScreen("drafts")
@@ -542,6 +546,9 @@ fun HackersPubApp(
                     onPostClick = { id ->
                         navController.navigate(DetailScreen.PostDetail.createRoute(id))
                     },
+                    onEditArticleClick = { id ->
+                        navController.navigate(DetailScreen.ComposeArticle.createRoute(articleId = id))
+                    },
                     isLoggedIn = isLoggedIn
                 )
             }
@@ -622,18 +629,29 @@ fun HackersPubApp(
                         type = NavType.StringType
                         nullable = true
                         defaultValue = null
+                    },
+                    navArgument("articleId") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
                     }
                 )
             ) { backStackEntry ->
                 val draftId = backStackEntry.arguments?.getString("draftId")
+                val articleId = backStackEntry.arguments?.getString("articleId")
                 ComposeArticleScreen(
                     draftId = draftId,
+                    articleId = articleId,
                     onSaveSuccess = {
                         navController.popBackStack()
                     },
-                    onPublishSuccess = { articleId ->
-                        navController.popBackStack()
-                        navController.navigate(DetailScreen.PostDetail.createRoute(articleId))
+                    onPublishSuccess = { updatedId ->
+                        if (articleId != null) {
+                            navController.popBackStack()
+                        } else {
+                            navController.popBackStack()
+                            navController.navigate(DetailScreen.PostDetail.createRoute(updatedId))
+                        }
                     },
                     onNavigateBack = {
                         navController.popBackStack()

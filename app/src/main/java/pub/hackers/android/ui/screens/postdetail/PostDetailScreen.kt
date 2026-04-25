@@ -36,6 +36,7 @@ import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Repeat
@@ -52,7 +53,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.zIndex
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -143,6 +151,7 @@ fun PostDetailScreen(
     onReplyClick: (String) -> Unit,
     onQuoteClick: (String) -> Unit = {},
     onPostClick: (String) -> Unit,
+    onEditArticleClick: (String) -> Unit = {},
     isLoggedIn: Boolean = true,
     viewModel: PostDetailViewModel = hiltViewModel()
 ) {
@@ -180,6 +189,12 @@ fun PostDetailScreen(
         { screenScope.launch { lazyListState.animateScrollToItem(0, 0) } }
     }
     val tocAvailable = uiState.post?.typename == "Article" && uiState.toc.isNotEmpty()
+    val showScrollToTop by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex > 0 ||
+                lazyListState.firstVisibleItemScrollOffset > 600
+        }
+    }
 
     var activeHeadingId by remember(postId) { mutableStateOf<String?>(null) }
     LaunchedEffect(lazyListState, postId) {
@@ -393,7 +408,7 @@ fun PostDetailScreen(
                         )
                     }
                 },
-                trailingContent = if (tocAvailable || uiState.canDelete) {
+                trailingContent = if (tocAvailable || uiState.canDelete || uiState.canEdit) {
                     {
                         if (tocAvailable) {
                             IconButton(onClick = { showTocSheet = true }) {
@@ -403,17 +418,13 @@ fun PostDetailScreen(
                                     tint = colors.accent,
                                 )
                             }
-                            IconButton(onClick = onScrollToTop) {
-                                Icon(
-                                    imageVector = Icons.Filled.KeyboardArrowUp,
-                                    contentDescription = stringResource(R.string.scroll_to_top),
-                                    tint = colors.accent,
-                                )
-                            }
                         }
-                        if (uiState.canDelete) {
+                        if (uiState.canDelete || uiState.canEdit) {
                             PostDetailActionMenu(
                                 isDeleting = uiState.isDeleting,
+                                canEdit = uiState.canEdit,
+                                canDelete = uiState.canDelete,
+                                onEdit = { onEditArticleClick(postId) },
                                 onDelete = {
                                     if (confirmBeforeDelete) {
                                         showDeleteConfirmation = true
@@ -447,6 +458,27 @@ fun PostDetailScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            AnimatedVisibility(
+                visible = showScrollToTop,
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut(),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 12.dp, end = 16.dp)
+                    .zIndex(1f)
+            ) {
+                FloatingActionButton(
+                    onClick = onScrollToTop,
+                    shape = CircleShape,
+                    containerColor = colors.surface,
+                    contentColor = colors.accent
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowUp,
+                        contentDescription = stringResource(R.string.scroll_to_top)
+                    )
+                }
+            }
             val post = uiState.post
             PostDetailStateDispatch(
                 post = post,
@@ -533,6 +565,9 @@ fun PostDetailScreen(
 @Composable
 private fun PostDetailActionMenu(
     isDeleting: Boolean,
+    canEdit: Boolean,
+    canDelete: Boolean,
+    onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -550,26 +585,49 @@ private fun PostDetailActionMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        text = stringResource(R.string.delete_post),
-                        color = colors.reaction
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = null,
-                        tint = colors.reaction
-                    )
-                },
-                onClick = {
-                    expanded = false
-                    onDelete()
-                },
-                enabled = !isDeleting
-            )
+            if (canEdit) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = stringResource(R.string.edit_article),
+                            color = colors.textPrimary
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = null,
+                            tint = colors.textPrimary
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        onEdit()
+                    }
+                )
+            }
+            if (canDelete) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = stringResource(R.string.delete_post),
+                            color = colors.reaction
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = null,
+                            tint = colors.reaction
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        onDelete()
+                    },
+                    enabled = !isDeleting
+                )
+            }
         }
     }
 }
