@@ -379,8 +379,6 @@ fun HtmlContent(
                         )
                     }
                     is ContentBlock.Image -> {
-                        // TODO: animated GIFs show only the first frame until we add the
-                        // `io.coil-kt.coil3:coil-gif` module and register AnimatedImageDecoder.
                         AsyncImage(
                             model = block.src,
                             contentDescription = block.alt,
