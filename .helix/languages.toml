@@ -1,0 +1,12 @@
+[language-server.kotlin-lsp]
+command = "kotlin-lsp"
+args = ["--stdio"]
+
+[language-server.kotlin-lsp.config]
+
+[[language]]
+name = "kotlin"
+language-servers = ["kotlin-lsp"]
+roots = ["settings.gradle.kts", "settings.gradle", "build.gradle.kts", "build.gradle"]
+auto-format = false
+indent = { tab-width = 4, unit = "    " }
