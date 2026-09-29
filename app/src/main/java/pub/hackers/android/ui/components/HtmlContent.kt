@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -102,6 +103,7 @@ internal data class ParsedInlineImage(
     val alt: String?,
     val width: Int,
     val height: Int,
+    val isCustomEmoji: Boolean = false,
 )
 
 @VisibleForTesting
@@ -159,6 +161,7 @@ private const val INLINE_IMAGE_DEFAULT_SIZE = 18
 private const val INLINE_IMAGE_MIN_SIZE = 12
 private const val INLINE_IMAGE_MAX_SIZE = 48
 private const val INLINE_IMAGE_TRAILING_SPACE = 4
+private const val CUSTOM_EMOJI_SIZE_EM = 1.2f
 private const val INLINE_IMAGE_ALTERNATE_TEXT = "\uFFFC"
 
 private data class HtmlCacheKey(
@@ -376,8 +379,6 @@ fun HtmlContent(
                         )
                     }
                     is ContentBlock.Image -> {
-                        // TODO: animated GIFs show only the first frame until we add the
-                        // `io.coil-kt.coil3:coil-gif` module and register AnimatedImageDecoder.
                         AsyncImage(
                             model = block.src,
                             contentDescription = block.alt,
@@ -531,19 +532,32 @@ private fun HtmlClickableText(
     val inlineContent = remember(parsedContent.inlineImages) {
         parsedContent.inlineImages.mapValues { (_, image) ->
             InlineTextContent(
-                Placeholder(
-                    width = (image.width + INLINE_IMAGE_TRAILING_SPACE).sp,
-                    height = image.height.sp,
-                    placeholderVerticalAlign = PlaceholderVerticalAlign.Center,
-                )
+                if (image.isCustomEmoji) {
+                    // Sized relative to the surrounding text, like the server's `height: 1em`.
+                    Placeholder(
+                        width = CUSTOM_EMOJI_SIZE_EM.em,
+                        height = CUSTOM_EMOJI_SIZE_EM.em,
+                        placeholderVerticalAlign = PlaceholderVerticalAlign.Center,
+                    )
+                } else {
+                    Placeholder(
+                        width = (image.width + INLINE_IMAGE_TRAILING_SPACE).sp,
+                        height = image.height.sp,
+                        placeholderVerticalAlign = PlaceholderVerticalAlign.Center,
+                    )
+                }
             ) {
                 AsyncImage(
                     model = image.src,
                     contentDescription = image.alt,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(image.width.dp, image.height.dp)
-                        .clip(CircleShape)
+                    contentScale = if (image.isCustomEmoji) ContentScale.Fit else ContentScale.Crop,
+                    modifier = if (image.isCustomEmoji) {
+                        Modifier.fillMaxSize()
+                    } else {
+                        Modifier
+                            .size(image.width.dp, image.height.dp)
+                            .clip(CircleShape)
+                    }
                 )
             }
         }
@@ -642,6 +656,11 @@ private fun extractImageBlocks(html: String): List<ContentBlock> {
     var cursor = 0
     for (match in IMG_BLOCK_REGEX.findAll(html)) {
         if (isInsideTag(html, match.range.first, "a")) {
+            continue
+        }
+        // Custom emoji stay in the text flow; pulling them out as blocks would
+        // split the paragraph and stretch them to full width.
+        if (isCustomEmoji(parseAttributes(match.groupValues[1]))) {
             continue
         }
         if (match.range.first > cursor) {
@@ -1238,7 +1257,8 @@ private fun parseInlineImage(
 ): ParsedInlineImage? {
     val src = attrs["src"]?.takeIf { it.isNotBlank() } ?: return null
     val classes = attrs["class"].orEmpty()
-    if (linkType == null && "inline-block" !in classes) return null
+    val customEmoji = isCustomEmoji(attrs)
+    if (linkType == null && "inline-block" !in classes && !customEmoji) return null
 
     val width = attrs["width"]
         ?.toIntOrNull()
@@ -1254,8 +1274,18 @@ private fun parseInlineImage(
         alt = attrs["alt"]?.takeIf { it.isNotBlank() },
         width = width,
         height = height,
+        isCustomEmoji = customEmoji,
     )
 }
+
+private val EMOJI_SHORTCODE_REGEX = Regex("""^:[^:\s]+:$""")
+
+// hackers.pub serves remote custom emoji as
+// `<img src=... alt=":name:" style="height:1em;vertical-align:middle;display:inline-block;">`
+// with no class or size attributes; the web frontend's own markup uses `class="emoji"`.
+private fun isCustomEmoji(attrs: Map<String, String>): Boolean =
+    attrs["class"].orEmpty().split(' ').any { it == "emoji" } ||
+        EMOJI_SHORTCODE_REGEX.matches(attrs["alt"].orEmpty().trim())
 
 private fun TextStyle.withContentStyle(contentStyle: HtmlContentStyle): TextStyle {
     return when (contentStyle) {

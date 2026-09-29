@@ -240,6 +240,19 @@ class HtmlContentKtTest {
     }
 
     @Test
+    fun `splitIntoBlocks keeps custom emoji inline`() {
+        val html = """<p>hello <img src="https://media.example/emoji/1" alt=":zoo:" style="
+        margin: 0;
+        height: 1em;
+        vertical-align: middle;
+        display: inline-block;
+      "> world</p>"""
+        val blocks = splitIntoBlocks(html)
+        assertEquals(1, blocks.size)
+        assertTrue(blocks[0] is ContentBlock.Text)
+    }
+
+    @Test
     fun `splitIntoBlocks extracts standalone image block`() {
         val html = """<p>before</p><p><img src="https://media.example/photo.jpg" alt="photo"></p><p>after</p>"""
         val blocks = splitIntoBlocks(html)
@@ -297,6 +310,57 @@ class HtmlContentKtTest {
         val annotations = result.getStringAnnotations("MENTION", 0, result.length)
         assertEquals(1, annotations.size)
         assertEquals("https://example.com/@alice", annotations[0].item)
+    }
+
+    @Test
+    fun `parseHtmlToContent renders custom emoji as inline placeholder`() {
+        val html = """<p>hello <img src="https://media.example/emoji/1" alt=":zoo:" style="
+        margin: 0;
+        height: 1em;
+        vertical-align: middle;
+        display: inline-block;
+      "> world</p>"""
+        val result = parseHtmlToContent(
+            html = html,
+            linkColor = linkColor,
+            hashtagColor = hashtagColor,
+            mentionBg = mentionBg,
+            codeBg = codeBg,
+        )
+
+        assertEquals("hello \uFFFC world", result.text.text)
+        val image = result.inlineImages.values.single()
+        assertEquals("https://media.example/emoji/1", image.src)
+        assertEquals(":zoo:", image.alt)
+        assertTrue(image.isCustomEmoji)
+    }
+
+    @Test
+    fun `parseHtmlToContent also recognizes the emoji class used by the web frontend`() {
+        val html = """<p>hi <img class="emoji" src="https://media.example/emoji/2" alt="" title=":zoo:"></p>"""
+        val result = parseHtmlToContent(
+            html = html,
+            linkColor = linkColor,
+            hashtagColor = hashtagColor,
+            mentionBg = mentionBg,
+            codeBg = codeBg,
+        )
+
+        assertTrue(result.inlineImages.values.single().isCustomEmoji)
+    }
+
+    @Test
+    fun `parseHtmlToContent still drops plain body images from the text flow`() {
+        val html = """<p>hello <img src="https://media.example/photo.jpg" alt="photo"> world</p>"""
+        val result = parseHtmlToContent(
+            html = html,
+            linkColor = linkColor,
+            hashtagColor = hashtagColor,
+            mentionBg = mentionBg,
+            codeBg = codeBg,
+        )
+
+        assertTrue(result.inlineImages.isEmpty())
     }
 
     @Test
