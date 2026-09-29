@@ -29,6 +29,7 @@ class PreferencesManager @Inject constructor(
         private val FONT_SIZE_MULTIPLIER = intPreferencesKey("font_size_multiplier") // stored as percentage (100 = 1.0x)
         private val RECENT_SEARCHES = stringPreferencesKey("recent_searches")
         private val THEME_MODE = stringPreferencesKey("theme_mode")
+        private val SHOW_LANGUAGE_FILTER = booleanPreferencesKey("show_language_filter")
         private const val MAX_RECENT_SEARCHES = 10
     }
 
@@ -71,6 +72,16 @@ class PreferencesManager @Inject constructor(
     suspend fun setThemeMode(value: ThemeMode) {
         context.preferencesDataStore.edit { prefs ->
             prefs[THEME_MODE] = value.storageValue
+        }
+    }
+
+    val showLanguageFilter: Flow<Boolean> = context.preferencesDataStore.data.map { prefs ->
+        prefs[SHOW_LANGUAGE_FILTER] ?: false
+    }
+
+    suspend fun setShowLanguageFilter(value: Boolean) {
+        context.preferencesDataStore.edit { prefs ->
+            prefs[SHOW_LANGUAGE_FILTER] = value
         }
     }
 

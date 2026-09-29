@@ -45,6 +45,7 @@ data class SettingsUiState(
     val useInAppBrowser: Boolean = true,
     val fontSizePercent: Int = 100,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val showLanguageFilter: Boolean = false,
     val passkeys: List<Passkey> = emptyList(),
     val accountId: String? = null,
     val isLoadingPasskeys: Boolean = false,
@@ -112,6 +113,7 @@ class SettingsViewModel @Inject constructor(
             val inAppBrowser = preferencesManager.useInAppBrowser.first()
             val fontSize = preferencesManager.fontSizePercent.first()
             val theme = preferencesManager.themeMode.first()
+            val showLanguageFilter = preferencesManager.showLanguageFilter.first()
 
             _uiState.update {
                 it.copy(
@@ -120,7 +122,8 @@ class SettingsViewModel @Inject constructor(
                     timelineMaxLength = maxLength,
                     useInAppBrowser = inAppBrowser,
                     fontSizePercent = fontSize,
-                    themeMode = theme
+                    themeMode = theme,
+                    showLanguageFilter = showLanguageFilter
                 )
             }
         }
@@ -154,6 +157,11 @@ class SettingsViewModel @Inject constructor(
     fun setThemeMode(value: ThemeMode) {
         _uiState.update { it.copy(themeMode = value) }
         viewModelScope.launch { preferencesManager.setThemeMode(value) }
+    }
+
+    fun setShowLanguageFilter(value: Boolean) {
+        _uiState.update { it.copy(showLanguageFilter = value) }
+        viewModelScope.launch { preferencesManager.setShowLanguageFilter(value) }
     }
 
     fun signOut() {

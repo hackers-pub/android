@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.AlertDialog
@@ -37,6 +38,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -386,6 +388,39 @@ fun SettingsScreen(
                         color = colors.textSecondary
                     )
                 }
+            }
+
+            HorizontalDivider(color = colors.divider, thickness = 1.dp)
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { viewModel.setShowLanguageFilter(!uiState.showLanguageFilter) }
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Language,
+                    contentDescription = null,
+                    tint = colors.textSecondary
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.settings_show_language_filter),
+                        style = typography.bodyLarge,
+                        color = colors.textPrimary
+                    )
+                    Text(
+                        text = stringResource(R.string.settings_show_language_filter_description),
+                        style = typography.bodyMedium,
+                        color = colors.textSecondary
+                    )
+                }
+                Switch(
+                    checked = uiState.showLanguageFilter,
+                    onCheckedChange = viewModel::setShowLanguageFilter
+                )
             }
 
             HorizontalDivider(color = colors.divider, thickness = 1.dp)
