@@ -1,0 +1,17 @@
+{
+  "languages": {
+    "Kotlin": {
+      "language_servers": ["kotlin-lsp", "!kotlin-language-server"],
+      "tab_size": 4,
+      "hard_tabs": false
+    }
+  },
+  "lsp": {
+    "kotlin-lsp": {
+      "binary": {
+        "path": "kotlin-lsp",
+        "arguments": ["--stdio"]
+      }
+    }
+  }
+}
