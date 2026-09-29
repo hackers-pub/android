@@ -208,6 +208,8 @@
     <string name="settings_timeline_max_length">Post preview length</string>
     <string name="settings_timeline_unlimited">Unlimited</string>
     <string name="settings_theme">Theme</string>
+    <string name="settings_show_language_filter">Show language filter</string>
+    <string name="settings_show_language_filter_description">Show language chips above the Home and Explore feeds</string>
     <string name="settings_theme_system">Follow system</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>

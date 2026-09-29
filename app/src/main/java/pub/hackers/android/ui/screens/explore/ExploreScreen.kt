@@ -59,6 +59,7 @@ fun ExploreScreen(
     onEditClick: (String) -> Unit = {},
     onSignInClick: () -> Unit,
     isLoggedIn: Boolean,
+    showLanguageFilter: Boolean = false,
     viewModel: ExploreViewModel = hiltViewModel()
 ) {
     val items = viewModel.posts.collectAsLazyPagingItems()
@@ -71,6 +72,11 @@ fun ExploreScreen(
     val bookmarkRemovedMessage = stringResource(R.string.bookmark_removed)
     val colors = LocalAppColors.current
     val typography = LocalAppTypography.current
+
+    // A language selected before the filter row was hidden would otherwise keep filtering invisibly.
+    LaunchedEffect(showLanguageFilter) {
+        if (!showLanguageFilter) viewModel.selectLanguage(null)
+    }
 
     // Scroll to top when tab changes.
     LaunchedEffect(selectedTab) {
@@ -162,13 +168,15 @@ fun ExploreScreen(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
-            LanguageFilterRow(
-                languages = uiState.suggestedFilterLanguages,
-                selectedLanguage = uiState.selectedLanguage,
-                onLanguageSelected = viewModel::selectLanguage,
-            )
+            if (showLanguageFilter) {
+                LanguageFilterRow(
+                    languages = uiState.suggestedFilterLanguages,
+                    selectedLanguage = uiState.selectedLanguage,
+                    onLanguageSelected = viewModel::selectLanguage,
+                )
 
-            HorizontalDivider(color = colors.divider)
+                HorizontalDivider(color = colors.divider)
+            }
 
             Box(modifier = Modifier.fillMaxSize()) {
                 val refresh = items.loadState.refresh

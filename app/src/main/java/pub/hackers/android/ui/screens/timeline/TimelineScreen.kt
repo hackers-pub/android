@@ -73,6 +73,7 @@ fun TimelineScreen(
     selectedHomeFeed: HomeFeed = HomeFeed.TIMELINE,
     onHomeFeedSelected: (HomeFeed) -> Unit = {},
     tabRetapped: Long = 0L,
+    showLanguageFilter: Boolean = false,
     userAvatarUrl: String? = null,
     viewModel: TimelineViewModel = hiltViewModel()
 ) {
@@ -84,6 +85,11 @@ fun TimelineScreen(
     val bookmarkedMessage = stringResource(R.string.bookmarked)
     val bookmarkRemovedMessage = stringResource(R.string.bookmark_removed)
     val colors = LocalAppColors.current
+
+    // A language selected before the filter row was hidden would otherwise keep filtering invisibly.
+    LaunchedEffect(showLanguageFilter) {
+        if (!showLanguageFilter) viewModel.selectLanguage(null)
+    }
 
     // Refresh draft count when screen becomes visible (e.g., returning from Drafts)
     LaunchedEffect(Unit) {
@@ -233,12 +239,14 @@ fun TimelineScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            LanguageFilterRow(
-                languages = uiState.suggestedFilterLanguages,
-                selectedLanguage = uiState.selectedLanguage,
-                onLanguageSelected = viewModel::selectLanguage,
-            )
-            HorizontalDivider(color = colors.divider)
+            if (showLanguageFilter) {
+                LanguageFilterRow(
+                    languages = uiState.suggestedFilterLanguages,
+                    selectedLanguage = uiState.selectedLanguage,
+                    onLanguageSelected = viewModel::selectLanguage,
+                )
+                HorizontalDivider(color = colors.divider)
+            }
 
             Box(modifier = Modifier.weight(1f)) {
                 val refresh = items.loadState.refresh

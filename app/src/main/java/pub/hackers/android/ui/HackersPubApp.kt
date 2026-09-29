@@ -182,6 +182,7 @@ fun HackersPubApp(
     val isLoggedInState by viewModel.isLoggedIn.collectAsState(initial = null as Boolean?)
 
     val fontSizePercent by viewModel.preferencesManager.fontSizePercent.collectAsState(initial = 100)
+    val showLanguageFilter by viewModel.preferencesManager.showLanguageFilter.collectAsState(initial = false)
     val hasUnread by viewModel.hasUnread.collectAsState()
     var selectedHomeFeed by remember { mutableStateOf(HomeFeed.TIMELINE) }
 
@@ -364,6 +365,7 @@ fun HackersPubApp(
                     .collectAsState()
                 TimelineScreen(
                     tabRetapped = tabRetapped,
+                    showLanguageFilter = showLanguageFilter,
                     selectedHomeFeed = selectedHomeFeed,
                     onHomeFeedSelected = ::navigateHomeFeed,
                     onPostClick = { postId ->
@@ -419,6 +421,7 @@ fun HackersPubApp(
 
             composable(Screen.Explore.route) {
                 ExploreScreen(
+                    showLanguageFilter = showLanguageFilter,
                     onPostClick = { postId ->
                         navController.navigate(DetailScreen.PostDetail.createRoute(postId))
                     },
