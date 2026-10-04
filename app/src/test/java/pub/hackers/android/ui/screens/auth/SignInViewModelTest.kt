@@ -17,8 +17,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import pub.hackers.android.R
+import pub.hackers.android.data.auth.AccountSessionCoordinator
 import pub.hackers.android.data.auth.PasskeyManager
-import pub.hackers.android.data.local.SessionManager
 import pub.hackers.android.data.repository.HackersPubRepository
 import pub.hackers.android.testutil.MainDispatcherRule
 
@@ -31,14 +31,14 @@ class SignInViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository = mockk<HackersPubRepository>(relaxed = true)
-    private val sessionManager = mockk<SessionManager>(relaxed = true)
+    private val accountSessionCoordinator = mockk<AccountSessionCoordinator>(relaxed = true)
     private val passkeyManager = mockk<PasskeyManager>(relaxed = true)
     private val context = mockk<Context>(relaxed = true)
     private val activity = mockk<Activity>(relaxed = true)
 
     private fun newViewModel() = SignInViewModel(
         repository = repository,
-        sessionManager = sessionManager,
+        accountSessionCoordinator = accountSessionCoordinator,
         passkeyManager = passkeyManager,
         context = context,
     )

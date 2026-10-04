@@ -26,8 +26,12 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.SwitchAccount
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import pub.hackers.android.R
+import pub.hackers.android.data.local.StoredAccount
 import pub.hackers.android.ui.components.LargeTitleHeader
 import pub.hackers.android.ui.theme.LocalAppColors
 import pub.hackers.android.ui.theme.LocalAppTypography
@@ -67,6 +72,8 @@ import pub.hackers.android.ui.theme.ThemeMode
 fun SettingsScreen(
     onSignInClick: () -> Unit,
     onSignOutComplete: () -> Unit,
+    onAccountSwitched: () -> Unit,
+    onAddAccountClick: () -> Unit,
     onProfileClick: (String) -> Unit,
     onNavigateBack: () -> Unit,
     onDraftsClick: () -> Unit = {},
@@ -92,9 +99,12 @@ fun SettingsScreen(
         if (isLoggedIn && passkeyEnabled) viewModel.loadPasskeys()
     }
 
-    LaunchedEffect(uiState.isSignedOut) {
-        if (uiState.isSignedOut) {
-            onSignOutComplete()
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                SettingsEvent.SignedOut -> onSignOutComplete()
+                SettingsEvent.AccountSwitched -> onAccountSwitched()
+            }
         }
     }
 
@@ -176,7 +186,7 @@ fun SettingsScreen(
                         contentScale = ContentScale.Crop
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = uiState.userName ?: "",
                             style = typography.titleMedium,
@@ -188,6 +198,12 @@ fun SettingsScreen(
                             color = colors.textSecondary
                         )
                     }
+                    AccountSwitcherMenu(
+                        accounts = uiState.accounts.filter { it.userId != uiState.activeUserId },
+                        enabled = !uiState.isChangingAccount,
+                        onSwitchAccount = viewModel::switchAccount,
+                        onAddAccountClick = onAddAccountClick,
+                    )
                 }
                 HorizontalDivider(color = colors.divider, thickness = 1.dp)
             }
@@ -585,6 +601,93 @@ internal fun RevokePasskeyDialog(
             }
         }
     )
+}
+
+/**
+ * Switcher button for the profile header. Opens a menu listing the stored
+ * accounts other than the active one, plus an entry that starts a fresh
+ * sign-in to add another account.
+ */
+@Composable
+internal fun AccountSwitcherMenu(
+    accounts: List<StoredAccount>,
+    enabled: Boolean,
+    onSwitchAccount: (String) -> Unit,
+    onAddAccountClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = LocalAppColors.current
+    val typography = LocalAppTypography.current
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }, enabled = enabled) {
+            Icon(
+                imageVector = Icons.Default.SwitchAccount,
+                contentDescription = stringResource(R.string.switch_account),
+                tint = colors.accent
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            accounts.forEach { account ->
+                DropdownMenuItem(
+                    text = {
+                        Column {
+                            Text(
+                                text = account.name,
+                                style = typography.bodyLarge,
+                                color = colors.textPrimary
+                            )
+                            Text(
+                                text = account.handle,
+                                style = typography.bodyMedium,
+                                color = colors.textSecondary
+                            )
+                        }
+                    },
+                    leadingIcon = {
+                        AsyncImage(
+                            model = account.avatarUrl,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        onSwitchAccount(account.userId)
+                    }
+                )
+            }
+            if (accounts.isNotEmpty()) {
+                HorizontalDivider(color = colors.divider, thickness = 1.dp)
+            }
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = stringResource(R.string.add_account),
+                        style = typography.bodyLarge,
+                        color = colors.textPrimary
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.PersonAdd,
+                        contentDescription = null,
+                        tint = colors.textSecondary
+                    )
+                },
+                onClick = {
+                    expanded = false
+                    onAddAccountClick()
+                }
+            )
+        }
+    }
 }
 
 @androidx.annotation.StringRes

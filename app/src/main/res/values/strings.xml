@@ -28,6 +28,8 @@
     <string name="remove_passkey_confirm">Are you sure you want to remove this passkey?</string>
     <string name="remove">Remove</string>
     <string name="add">Add</string>
+    <string name="add_account">Add Account</string>
+    <string name="switch_account">Switch Account</string>
     <string name="no_passkey_registered">No passkey found. Sign in with your username first, then register a passkey in Settings.</string>
     <string name="asset_statements" translatable="false">[{\"include\":\"https://hackers.pub/.well-known/assetlinks.json\"}]</string>
 

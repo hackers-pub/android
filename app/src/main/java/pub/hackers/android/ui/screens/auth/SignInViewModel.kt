@@ -15,8 +15,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import pub.hackers.android.R
+import pub.hackers.android.data.auth.AccountSessionCoordinator
 import pub.hackers.android.data.auth.PasskeyManager
-import pub.hackers.android.data.local.SessionManager
 import pub.hackers.android.data.repository.HackersPubRepository
 import java.util.UUID
 import javax.inject.Inject
@@ -39,7 +39,7 @@ data class SignInUiState(
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val repository: HackersPubRepository,
-    private val sessionManager: SessionManager,
+    private val accountSessionCoordinator: AccountSessionCoordinator,
     private val passkeyManager: PasskeyManager,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -93,14 +93,7 @@ class SignInViewModel @Inject constructor(
 
             repository.completeLoginChallenge(token, code)
                 .onSuccess { session ->
-                    sessionManager.saveSession(
-                        token = session.id,
-                        userId = session.account.id,
-                        username = session.account.username,
-                        handle = session.account.handle,
-                        name = session.account.name,
-                        avatarUrl = session.account.avatarUrl
-                    )
+                    accountSessionCoordinator.signIn(session)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -125,14 +118,7 @@ class SignInViewModel @Inject constructor(
 
             repository.completeLoginChallenge(token, code)
                 .onSuccess { session ->
-                    sessionManager.saveSession(
-                        token = session.id,
-                        userId = session.account.id,
-                        username = session.account.username,
-                        handle = session.account.handle,
-                        name = session.account.name,
-                        avatarUrl = session.account.avatarUrl
-                    )
+                    accountSessionCoordinator.signIn(session)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -174,14 +160,7 @@ class SignInViewModel @Inject constructor(
                     .getOrThrow()
                 android.util.Log.d("PasskeyAuth", "Step 5: Login success, session=${session.id}")
 
-                sessionManager.saveSession(
-                    token = session.id,
-                    userId = session.account.id,
-                    username = session.account.username,
-                    handle = session.account.handle,
-                    name = session.account.name,
-                    avatarUrl = session.account.avatarUrl
-                )
+                accountSessionCoordinator.signIn(session)
                 _uiState.update { it.copy(isLoading = false, isSignedIn = true) }
             } catch (e: NoCredentialException) {
                 android.util.Log.w("PasskeyAuth", "No passkey registered", e)

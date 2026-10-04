@@ -116,6 +116,15 @@ sealed class Screen(
     )
 }
 
+private val TOP_LEVEL_ROUTES = listOf(
+    Screen.Timeline.route,
+    Screen.News.route,
+    Screen.Explore.route,
+    Screen.Notifications.route,
+    Screen.Search.route,
+    Screen.Settings.route,
+)
+
 sealed class DetailScreen(val route: String) {
     data object SignIn : DetailScreen("signin?token={token}&code={code}") {
         fun createRoute(token: String? = null, code: String? = null): String {
@@ -311,6 +320,19 @@ fun HackersPubApp(
     val showBottomBar = bottomNavItems.any { it.route == currentBaseRoute } ||
         (isLoggedIn && currentHomeFeed != null)
 
+    // Every account change lands on a fresh root. popUpTo(0) alone isn't enough:
+    // bottom-nav tabs navigate with saveState/restoreState, so a tab that isn't
+    // on the back stack can still hold a saved back stack (and its ViewModels)
+    // that the next tab tap would restore — with the previous account's data.
+    fun resetToRoot(route: String) {
+        navController.navigate(route) {
+            popUpTo(0) { inclusive = true }
+        }
+        TOP_LEVEL_ROUTES
+            .filter { it != route }
+            .forEach { navController.clearBackStack(it) }
+    }
+
     fun navigateHomeFeed(feed: HomeFeed) {
         selectedHomeFeed = feed
         navController.navigate(feed.route) {
@@ -481,9 +503,13 @@ fun HackersPubApp(
                         navController.navigate(DetailScreen.SignIn.createRoute())
                     },
                     onSignOutComplete = {
-                        navController.navigate(Screen.Explore.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
+                        resetToRoot(Screen.Explore.route)
+                    },
+                    onAccountSwitched = {
+                        resetToRoot(Screen.Timeline.route)
+                    },
+                    onAddAccountClick = {
+                        navController.navigate(DetailScreen.SignIn.createRoute())
                     },
                     onProfileClick = { handle ->
                         navController.navigate(DetailScreen.Profile.createRoute(handle))
@@ -529,9 +555,7 @@ fun HackersPubApp(
                     deepLinkToken = token,
                     deepLinkCode = code,
                     onSignInSuccess = {
-                        navController.navigate(Screen.Timeline.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
+                        resetToRoot(Screen.Timeline.route)
                     },
                     onNavigateBack = {
                         navController.popBackStack()

@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import org.junit.Assert.assertEquals
@@ -13,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import pub.hackers.android.data.local.StoredAccount
 import pub.hackers.android.ui.theme.AppTypographyDefaults
 import pub.hackers.android.ui.theme.LightAppColors
 import pub.hackers.android.ui.theme.LocalAppColors
@@ -77,6 +79,31 @@ class SettingsScreenTest {
         composeRule.onNodeWithText("Cancel").performClick()
 
         assertEquals(1, dismissed)
+    }
+
+    @Test
+    fun `AccountSwitcherMenu opens a dropdown with other accounts and Add Account`() {
+        val switched = mutableListOf<String>()
+        var addClicks = 0
+        val bob = StoredAccount("bob-token", "bob-id", "bob", "@bob@hackers.pub", "Bob", "b.png")
+        composeRule.setContent {
+            TestTheme {
+                AccountSwitcherMenu(
+                    accounts = listOf(bob),
+                    enabled = true,
+                    onSwitchAccount = { switched += it },
+                    onAddAccountClick = { addClicks++ },
+                )
+            }
+        }
+
+        composeRule.onNodeWithContentDescription("Switch Account").performClick()
+        composeRule.onNodeWithText("Bob").performClick()
+        composeRule.onNodeWithContentDescription("Switch Account").performClick()
+        composeRule.onNodeWithText("Add Account").performClick()
+
+        assertEquals(listOf("bob-id"), switched)
+        assertEquals(1, addClicks)
     }
 }
 
