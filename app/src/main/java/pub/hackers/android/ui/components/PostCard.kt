@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
@@ -378,12 +379,14 @@ private fun NoteCard(
 
                 if (contentVisible) {
                     displayPost.name?.let { title ->
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
+                        SelectionContainer {
+                            Text(
+                                text = title,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                        }
                     }
                 }
 
@@ -400,12 +403,14 @@ private fun NoteCard(
                 val translatedText = translatedContent
                 if (contentVisible) {
                     if (showTranslated && translatedText != null) {
-                        Text(
-                            text = translatedText,
-                            style = typography.bodyLarge,
-                            color = colors.textBody,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        SelectionContainer {
+                            Text(
+                                text = translatedText,
+                                style = typography.bodyLarge,
+                                color = colors.textBody,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     } else {
                         HtmlContent(
                             html = truncatedContent,
@@ -981,14 +986,16 @@ fun QuotedPostPreview(
         Spacer(modifier = Modifier.height(8.dp))
 
         post.name?.let { title ->
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
+            SelectionContainer {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
         }
 
         val contentWarningText = post.contentWarningText()

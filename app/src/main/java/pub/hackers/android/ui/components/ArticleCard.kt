@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.Bookmark
@@ -196,30 +197,34 @@ fun ArticleCard(
                 }
 
                 if (contentVisible) {
-                    // Article title
-                    displayPost.name?.let { title ->
-                        Text(
-                            text = title,
-                            style = typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            color = colors.textPrimary,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                    SelectionContainer {
+                        Column {
+                            // Article title
+                            displayPost.name?.let { title ->
+                                Text(
+                                    text = title,
+                                    style = typography.titleLarge,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = colors.textPrimary,
+                                    maxLines = 3,
+                                    overflow = TextOverflow.Ellipsis
+                                )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
 
-                    // Summary or excerpt
-                    val summaryText = displayPost.summary ?: displayPost.excerpt
-                    if (summaryText.isNotBlank()) {
-                        Text(
-                            text = summaryText,
-                            style = typography.bodyMedium,
-                            color = colors.textSecondary,
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                            // Summary or excerpt
+                            val summaryText = displayPost.summary ?: displayPost.excerpt
+                            if (summaryText.isNotBlank()) {
+                                Text(
+                                    text = summaryText,
+                                    style = typography.bodyMedium,
+                                    color = colors.textSecondary,
+                                    maxLines = 4,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
                     }
                 }
             }

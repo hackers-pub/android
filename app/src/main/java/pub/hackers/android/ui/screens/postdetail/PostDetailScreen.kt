@@ -7,6 +7,7 @@ import android.webkit.WebView
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -790,12 +791,14 @@ internal fun PostDetailContent(
 
                 if (contentVisible) {
                     post.name?.let { title ->
-                        Text(
-                            text = title,
-                            style = if (isArticle) typography.titleLarge else typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = colors.textPrimary
-                        )
+                        SelectionContainer {
+                            Text(
+                                text = title,
+                                style = if (isArticle) typography.titleLarge else typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.textPrimary
+                            )
+                        }
                         Spacer(modifier = Modifier.height(if (isArticle) 12.dp else 8.dp))
                         if (isArticle) {
                             HorizontalDivider(color = colors.divider)
@@ -821,12 +824,14 @@ internal fun PostDetailContent(
                 val translatedText = translatedContent
                 if (contentVisible) {
                     if (showTranslated && translatedText != null) {
-                        Text(
-                            text = translatedText,
-                            style = typography.bodyLarge,
-                            color = colors.textBody,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        SelectionContainer {
+                            Text(
+                                text = translatedText,
+                                style = typography.bodyLarge,
+                                color = colors.textBody,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     } else {
                         HtmlContent(
                             html = post.content,
