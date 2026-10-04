@@ -1,13 +1,9 @@
 package pub.hackers.android.ui.screens.settings
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.lifecycle.ViewModel
-import androidx.work.WorkManager
-import pub.hackers.android.data.local.NotificationStateManager
-import pub.hackers.android.ui.AppViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.cache.normalized.apolloStore
@@ -21,10 +17,15 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
+import pub.hackers.android.data.auth.AccountSessionCoordinator
 import pub.hackers.android.data.auth.PasskeyManager
+import pub.hackers.android.data.local.StoredAccount
 import pub.hackers.android.data.local.PreferencesManager
 import pub.hackers.android.data.local.SessionManager
-import pub.hackers.android.data.messaging.FcmTokenManager
 import pub.hackers.android.data.repository.HackersPubRepository
 import pub.hackers.android.domain.model.Passkey
 import pub.hackers.android.ui.theme.ThemeMode
@@ -37,7 +38,9 @@ data class SettingsUiState(
     val userAvatar: String? = null,
     val appVersion: String = "",
     val cacheSize: String = "",
-    val isSignedOut: Boolean = false,
+    val accounts: List<StoredAccount> = emptyList(),
+    val activeUserId: String? = null,
+    val isChangingAccount: Boolean = false,
     val message: String? = null,
     val confirmBeforeDelete: Boolean = true,
     val confirmBeforeShare: Boolean = false,
@@ -52,24 +55,34 @@ data class SettingsUiState(
     val isRegisteringPasskey: Boolean = false
 )
 
+sealed interface SettingsEvent {
+    /** The last stored account was signed out; the device is now signed out. */
+    data object SignedOut : SettingsEvent
+
+    /** A different stored account is now active (switched to, or promoted after sign-out). */
+    data object AccountSwitched : SettingsEvent
+}
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val sessionManager: SessionManager,
     private val preferencesManager: PreferencesManager,
     private val repository: HackersPubRepository,
     private val apolloClient: ApolloClient,
-    private val notificationStateManager: NotificationStateManager,
     private val passkeyManager: PasskeyManager,
-    private val fcmTokenManager: FcmTokenManager,
-    private val workManager: WorkManager,
+    private val accountSessionCoordinator: AccountSessionCoordinator,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
+    private val _events = Channel<SettingsEvent>(Channel.BUFFERED)
+    val events: Flow<SettingsEvent> = _events.receiveAsFlow()
+
     init {
         loadUserInfo()
+        observeAccounts()
         loadAppVersion()
         loadPreferences()
         calculateCacheSize()
@@ -87,6 +100,29 @@ class SettingsViewModel @Inject constructor(
                     userHandle = handle,
                     userAvatar = avatar
                 )
+            }
+        }
+    }
+
+    private fun observeAccounts() {
+        viewModelScope.launch {
+            combine(sessionManager.accounts, sessionManager.userId, ::Pair)
+                .collect { (accounts, activeUserId) ->
+                    _uiState.update {
+                        it.copy(accounts = accounts, activeUserId = activeUserId)
+                    }
+                }
+        }
+    }
+
+    fun switchAccount(userId: String) {
+        if (_uiState.value.isChangingAccount || userId == _uiState.value.activeUserId) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isChangingAccount = true) }
+            val switched = accountSessionCoordinator.switchTo(userId)
+            _uiState.update { it.copy(isChangingAccount = false) }
+            if (switched) {
+                _events.send(SettingsEvent.AccountSwitched)
             }
         }
     }
@@ -165,19 +201,14 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun signOut() {
+        if (_uiState.value.isChangingAccount) return
         viewModelScope.launch {
-            fcmTokenManager.unregisterCurrentToken()
-            val sessionId = sessionManager.sessionToken.first()
-            if (sessionId != null) {
-                repository.revokeSession(sessionId)
-            }
-            workManager.cancelUniqueWork(AppViewModel.NOTIFICATION_WORK_NAME)
-            notificationStateManager.clear()
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.cancelAll()
-            sessionManager.clearSession()
-            apolloClient.apolloStore.clearAll()
-            _uiState.update { it.copy(isSignedOut = true) }
+            _uiState.update { it.copy(isChangingAccount = true) }
+            val next = accountSessionCoordinator.signOut()
+            _uiState.update { it.copy(isChangingAccount = false) }
+            _events.send(
+                if (next != null) SettingsEvent.AccountSwitched else SettingsEvent.SignedOut
+            )
         }
     }
 

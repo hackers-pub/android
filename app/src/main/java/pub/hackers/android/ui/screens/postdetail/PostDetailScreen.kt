@@ -1,12 +1,11 @@
 package pub.hackers.android.ui.screens.postdetail
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.text.Html
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,7 +46,6 @@ import androidx.compose.material.icons.outlined.FormatQuote
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -138,6 +136,12 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import pub.hackers.android.ui.share.PostShareButton
+import pub.hackers.android.ui.share.PostShareSelectionArea
+import pub.hackers.android.ui.share.htmlToPlainText
+import pub.hackers.android.ui.share.sharePlainText
+import pub.hackers.android.ui.share.shareTitle
+import pub.hackers.android.ui.share.shareUrl
 import pub.hackers.android.ui.theme.AppShapes
 import pub.hackers.android.ui.theme.LocalAppColors
 import pub.hackers.android.ui.theme.LocalAppTypography
@@ -544,18 +548,7 @@ fun PostDetailScreen(
                         onSharesClick = { viewModel.showSharesSheet() },
                         onQuotesClick = { viewModel.showQuotesSheet() },
                         onReactionsClick = { viewModel.showAllReactors() },
-                        onExternalShareClick = {
-                            val shareUrl = uiState.post?.url
-                                ?: uiState.post?.iri
-                            if (shareUrl != null) {
-                                val sendIntent = Intent().apply {
-                                    action = Intent.ACTION_SEND
-                                    putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                    type = "text/plain"
-                                }
-                                context.startActivity(Intent.createChooser(sendIntent, null))
-                            }
-                        },
+                        onExternalShare = { context.sharePlainText(it) },
                         onWebViewClick = { url -> webViewUrl = url },
                         onVotePoll = if (isLoggedIn) {
                             { questionId, indices -> viewModel.voteOnPoll(questionId, indices) }
@@ -674,7 +667,7 @@ internal fun PostDetailContent(
     onSharesClick: () -> Unit,
     onQuotesClick: () -> Unit,
     onReactionsClick: () -> Unit,
-    onExternalShareClick: () -> Unit,
+    onExternalShare: (String) -> Unit,
     onWebViewClick: (String) -> Unit = {},
     localReplies: List<Post> = emptyList(),
     onVotePoll: (suspend (questionId: String, optionIndices: List<Int>) -> Result<Poll>)? = null,
@@ -713,7 +706,8 @@ internal fun PostDetailContent(
                     ReplyTargetPreview(
                         post = replyTarget,
                         onClick = { onPostClick(replyTarget.id) },
-                        onProfileClick = onProfileClick
+                        onProfileClick = onProfileClick,
+                        onShare = onExternalShare
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -790,12 +784,20 @@ internal fun PostDetailContent(
 
                 if (contentVisible) {
                     post.name?.let { title ->
-                        Text(
-                            text = title,
-                            style = if (isArticle) typography.titleLarge else typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = colors.textPrimary
-                        )
+                        PostShareSelectionArea(
+                            title = post.shareTitle(),
+                            url = post.shareUrl(),
+                            onShare = onExternalShare,
+                        ) {
+                            SelectionContainer {
+                                Text(
+                                    text = title,
+                                    style = if (isArticle) typography.titleLarge else typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.textPrimary
+                                )
+                            }
+                        }
                         Spacer(modifier = Modifier.height(if (isArticle) 12.dp else 8.dp))
                         if (isArticle) {
                             HorizontalDivider(color = colors.divider)
@@ -820,21 +822,30 @@ internal fun PostDetailContent(
 
                 val translatedText = translatedContent
                 if (contentVisible) {
-                    if (showTranslated && translatedText != null) {
-                        Text(
-                            text = translatedText,
-                            style = typography.bodyLarge,
-                            color = colors.textBody,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else {
-                        HtmlContent(
-                            html = post.content,
-                            modifier = Modifier.fillMaxWidth(),
-                            contentStyle = HtmlContentStyle.Prose,
-                            onMentionClick = onProfileClick,
-                            onHeadingPositioned = if (isArticle) onHeadingPositioned else null,
-                        )
+                    val showingTranslation = showTranslated && translatedText != null
+                    PostShareSelectionArea(
+                        title = post.shareTitle(),
+                        url = post.shareUrl(),
+                        onShare = onExternalShare,
+                    ) {
+                        if (showingTranslation) {
+                            SelectionContainer {
+                                Text(
+                                    text = translatedText.orEmpty(),
+                                    style = typography.bodyLarge,
+                                    color = colors.textBody,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        } else {
+                            HtmlContent(
+                                html = post.content,
+                                modifier = Modifier.fillMaxWidth(),
+                                contentStyle = HtmlContentStyle.Prose,
+                                onMentionClick = onProfileClick,
+                                onHeadingPositioned = if (isArticle) onHeadingPositioned else null,
+                            )
+                        }
                     }
 
                     if (isTranslating) {
@@ -918,7 +929,8 @@ internal fun PostDetailContent(
                         QuotedPostPreview(
                             post = post.quotedPost,
                             onClick = { onPostClick(post.quotedPost.id) },
-                            onProfileClick = onProfileClick
+                            onProfileClick = onProfileClick,
+                            onShare = onExternalShare
                         )
                     }
 
@@ -1118,13 +1130,11 @@ internal fun PostDetailContent(
                             )
                         }
                     }
-                    IconButton(onClick = onExternalShareClick) {
-                        Icon(
-                            imageVector = Icons.Outlined.Share,
-                            contentDescription = stringResource(R.string.share),
-                            tint = colors.textSecondary
-                        )
-                    }
+                    PostShareButton(
+                        post = post,
+                        onShare = onExternalShare,
+                        tint = colors.textSecondary
+                    )
                 }
 
                 HorizontalDivider(color = colors.divider)
@@ -1150,6 +1160,7 @@ internal fun PostDetailContent(
                     post = reply,
                     onClick = { onPostClick(reply.id) },
                     onProfileClick = onProfileClick,
+                    onExternalShare = onExternalShare,
                     onQuotedPostClick = onPostClick
                 )
                 HorizontalDivider(thickness = 0.5.dp, color = colors.divider)
@@ -1169,6 +1180,7 @@ internal fun PostDetailContent(
                     post = reply,
                     onClick = { onPostClick(reply.id) },
                     onProfileClick = onProfileClick,
+                    onExternalShare = onExternalShare,
                     onQuotedPostClick = onPostClick
                 )
                 HorizontalDivider(thickness = 0.5.dp, color = colors.divider)
@@ -1465,7 +1477,8 @@ private fun QuotesSheet(
 private fun ReplyTargetPreview(
     post: Post,
     onClick: () -> Unit,
-    onProfileClick: (String) -> Unit
+    onProfileClick: (String) -> Unit,
+    onShare: (String) -> Unit
 ) {
     val colors = LocalAppColors.current
     val typography = LocalAppTypography.current
@@ -1509,13 +1522,19 @@ private fun ReplyTargetPreview(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        HtmlContent(
-            html = post.content,
-            maxLines = 3,
-            modifier = Modifier.fillMaxWidth(),
-            onMentionClick = onProfileClick,
-            onTextClick = onClick
-        )
+        PostShareSelectionArea(
+            title = post.shareTitle(),
+            url = post.shareUrl(),
+            onShare = onShare,
+        ) {
+            HtmlContent(
+                html = post.content,
+                maxLines = 3,
+                modifier = Modifier.fillMaxWidth(),
+                onMentionClick = onProfileClick,
+                onTextClick = onClick
+            )
+        }
 
         if (post.media.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
@@ -1576,7 +1595,7 @@ private suspend fun translateDetailContent(
     html: String,
     targetLanguageTag: String
 ): String = withContext(Dispatchers.IO) {
-    val plainText = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString().trim()
+    val plainText = htmlToPlainText(html)
     if (plainText.isBlank()) return@withContext ""
 
     val languageIdentifier = LanguageIdentification.getClient()

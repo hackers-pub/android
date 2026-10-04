@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Reply
 import androidx.compose.material.icons.filled.Bookmark
@@ -25,7 +26,6 @@ import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -53,6 +53,10 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import pub.hackers.android.R
 import pub.hackers.android.domain.model.Post
+import pub.hackers.android.ui.share.PostShareButton
+import pub.hackers.android.ui.share.PostShareSelectionArea
+import pub.hackers.android.ui.share.shareTitle
+import pub.hackers.android.ui.share.shareUrl
 import pub.hackers.android.ui.theme.AppShapes
 import pub.hackers.android.ui.theme.LocalAppColors
 import pub.hackers.android.ui.theme.LocalAppTypography
@@ -70,7 +74,7 @@ fun ArticleCard(
     onReactionLongPress: (() -> Unit)? = null,
     onBookmarkClick: (() -> Unit)? = null,
     onPinClick: ((Post) -> Unit)? = null,
-    onExternalShareClick: (() -> Unit)? = null
+    onExternalShare: ((String) -> Unit)? = null
 ) {
     val displayPost = post.sharedPost ?: post
     val isRepost = post.lastSharer != null
@@ -196,30 +200,40 @@ fun ArticleCard(
                 }
 
                 if (contentVisible) {
-                    // Article title
-                    displayPost.name?.let { title ->
-                        Text(
-                            text = title,
-                            style = typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            color = colors.textPrimary,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                    PostShareSelectionArea(
+                        title = displayPost.shareTitle(),
+                        url = displayPost.shareUrl(),
+                        onShare = onExternalShare,
+                    ) {
+                        SelectionContainer {
+                            Column {
+                                // Article title
+                                displayPost.name?.let { title ->
+                                    Text(
+                                        text = title,
+                                        style = typography.titleLarge,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = colors.textPrimary,
+                                        maxLines = 3,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
 
-                    // Summary or excerpt
-                    val summaryText = displayPost.summary ?: displayPost.excerpt
-                    if (summaryText.isNotBlank()) {
-                        Text(
-                            text = summaryText,
-                            style = typography.bodyMedium,
-                            color = colors.textSecondary,
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                                // Summary or excerpt
+                                val summaryText = displayPost.summary ?: displayPost.excerpt
+                                if (summaryText.isNotBlank()) {
+                                    Text(
+                                        text = summaryText,
+                                        style = typography.bodyMedium,
+                                        color = colors.textSecondary,
+                                        maxLines = 4,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -249,7 +263,7 @@ fun ArticleCard(
                 onPinClick = onPinClick?.takeIf { displayPost.canPinToViewerProfile() }?.let {
                     { it(displayPost) }
                 },
-                onExternalShareClick = onExternalShareClick
+                onExternalShare = onExternalShare
             )
         }
     }
@@ -306,7 +320,7 @@ private fun ArticleEngagementBar(
     onReactionLongPress: (() -> Unit)?,
     onBookmarkClick: (() -> Unit)?,
     onPinClick: (() -> Unit)?,
-    onExternalShareClick: (() -> Unit)?
+    onExternalShare: ((String) -> Unit)?
 ) {
     val colors = LocalAppColors.current
     val isShared = post.viewerHasShared
@@ -364,14 +378,12 @@ private fun ArticleEngagementBar(
                 onPinClick = onPinClick,
             )
         }
-        if (onExternalShareClick != null) {
-            IconButton(onClick = onExternalShareClick) {
-                Icon(
-                    imageVector = Icons.Outlined.Share,
-                    contentDescription = stringResource(R.string.share),
-                    tint = colors.textSecondary
-                )
-            }
+        if (onExternalShare != null) {
+            PostShareButton(
+                post = post,
+                onShare = onExternalShare,
+                tint = colors.textSecondary
+            )
         }
     }
 }

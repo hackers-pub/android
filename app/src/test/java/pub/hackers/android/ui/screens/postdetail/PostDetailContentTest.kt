@@ -163,7 +163,7 @@ class PostDetailContentTest {
                     onSharesClick = {},
                     onQuotesClick = {},
                     onReactionsClick = {},
-                    onExternalShareClick = {},
+                    onExternalShare = {},
                 )
             }
         }

@@ -4,7 +4,6 @@ package pub.hackers.android.ui.components
 
 import android.content.Intent
 import android.net.Uri
-import android.text.Html
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,6 +31,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
@@ -96,6 +96,12 @@ import pub.hackers.android.R
 import pub.hackers.android.domain.model.Poll
 import pub.hackers.android.domain.model.Post
 import pub.hackers.android.domain.model.PostVisibility
+import pub.hackers.android.ui.share.PostShareButton
+import pub.hackers.android.ui.share.PostShareSelectionArea
+import pub.hackers.android.ui.share.htmlToPlainText
+import pub.hackers.android.ui.share.sharePlainText
+import pub.hackers.android.ui.share.shareTitle
+import pub.hackers.android.ui.share.shareUrl
 import pub.hackers.android.ui.theme.AppShapes
 import pub.hackers.android.ui.theme.LocalAppColors
 import pub.hackers.android.ui.theme.LocalAppTypography
@@ -117,7 +123,7 @@ fun PostCard(
     onBookmarkClick: (() -> Unit)? = null,
     onPinClick: ((Post) -> Unit)? = null,
     onEditClick: ((Post) -> Unit)? = null,
-    onExternalShareClick: (() -> Unit)? = null,
+    onExternalShare: ((String) -> Unit)? = null,
     onQuotedPostClick: ((String) -> Unit)? = null,
     onVotePoll: (suspend (questionId: String, optionIndices: List<Int>) -> Result<Poll>)? = null,
     contentMaxLength: Int = 0
@@ -136,7 +142,7 @@ fun PostCard(
             onReactionLongPress = onReactionLongPress,
             onBookmarkClick = onBookmarkClick,
             onPinClick = onPinClick,
-            onExternalShareClick = onExternalShareClick,
+            onExternalShare = onExternalShare,
             modifier = modifier
         )
     } else {
@@ -152,7 +158,7 @@ fun PostCard(
             onBookmarkClick = onBookmarkClick,
             onPinClick = onPinClick,
             onEditClick = onEditClick,
-            onExternalShareClick = onExternalShareClick,
+            onExternalShare = onExternalShare,
             onQuotedPostClick = onQuotedPostClick,
             onVotePoll = onVotePoll,
             contentMaxLength = contentMaxLength,
@@ -175,7 +181,7 @@ private fun NoteCard(
     onBookmarkClick: (() -> Unit)? = null,
     onPinClick: ((Post) -> Unit)? = null,
     onEditClick: ((Post) -> Unit)? = null,
-    onExternalShareClick: (() -> Unit)? = null,
+    onExternalShare: ((String) -> Unit)? = null,
     onQuotedPostClick: ((String) -> Unit)? = null,
     onVotePoll: (suspend (questionId: String, optionIndices: List<Int>) -> Result<Poll>)? = null,
     contentMaxLength: Int = 0
@@ -229,14 +235,20 @@ private fun NoteCard(
                         color = colors.textPrimary
                     )
                     Spacer(modifier = Modifier.height(2.dp))
-                    HtmlContent(
-                        html = replyTarget.content,
-                        maxLines = 2,
-                        modifier = Modifier.fillMaxWidth(),
-                        onTextClick = {
-                            onQuotedPostClick?.invoke(replyTarget.id)
-                        }
-                    )
+                    PostShareSelectionArea(
+                        title = replyTarget.shareTitle(),
+                        url = replyTarget.shareUrl(),
+                        onShare = onExternalShare,
+                    ) {
+                        HtmlContent(
+                            html = replyTarget.content,
+                            maxLines = 2,
+                            modifier = Modifier.fillMaxWidth(),
+                            onTextClick = {
+                                onQuotedPostClick?.invoke(replyTarget.id)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -378,12 +390,20 @@ private fun NoteCard(
 
                 if (contentVisible) {
                     displayPost.name?.let { title ->
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
+                        PostShareSelectionArea(
+                            title = displayPost.shareTitle(),
+                            url = displayPost.shareUrl(),
+                            onShare = onExternalShare,
+                        ) {
+                            SelectionContainer {
+                                Text(
+                                    text = title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -399,21 +419,30 @@ private fun NoteCard(
 
                 val translatedText = translatedContent
                 if (contentVisible) {
-                    if (showTranslated && translatedText != null) {
-                        Text(
-                            text = translatedText,
-                            style = typography.bodyLarge,
-                            color = colors.textBody,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } else {
-                        HtmlContent(
-                            html = truncatedContent,
-                            maxLines = if (contentMaxLength > 0) Int.MAX_VALUE else 10,
-                            modifier = Modifier.fillMaxWidth(),
-                            onMentionClick = onProfileClick,
-                            onTextClick = onClick
-                        )
+                    val showingTranslation = showTranslated && translatedText != null
+                    PostShareSelectionArea(
+                        title = displayPost.shareTitle(),
+                        url = displayPost.shareUrl(),
+                        onShare = onExternalShare,
+                    ) {
+                        if (showingTranslation) {
+                            SelectionContainer {
+                                Text(
+                                    text = translatedText.orEmpty(),
+                                    style = typography.bodyLarge,
+                                    color = colors.textBody,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        } else {
+                            HtmlContent(
+                                html = truncatedContent,
+                                maxLines = if (contentMaxLength > 0) Int.MAX_VALUE else 10,
+                                modifier = Modifier.fillMaxWidth(),
+                                onMentionClick = onProfileClick,
+                                onTextClick = onClick
+                            )
+                        }
                     }
 
                     if (isTranslating) {
@@ -512,7 +541,8 @@ private fun NoteCard(
                         QuotedPostPreview(
                             post = displayPost.quotedPost,
                             onClick = { onQuotedPostClick?.invoke(displayPost.quotedPost.id) },
-                            onProfileClick = onProfileClick
+                            onProfileClick = onProfileClick,
+                            onShare = onExternalShare
                         )
                     }
 
@@ -591,7 +621,7 @@ private fun NoteCard(
                     onEditClick = onEditClick?.takeIf { displayPost.canEditNote() }?.let {
                         { it(displayPost) }
                     },
-                    onExternalShareClick = onExternalShareClick
+                    onExternalShare = onExternalShare
                 )
             }
         }
@@ -610,7 +640,7 @@ private fun EngagementBar(
     onBookmarkClick: (() -> Unit)? = null,
     onPinClick: (() -> Unit)? = null,
     onEditClick: (() -> Unit)? = null,
-    onExternalShareClick: (() -> Unit)? = null
+    onExternalShare: ((String) -> Unit)? = null
 ) {
     val colors = LocalAppColors.current
     val isReplied = post.engagementStats.replies > 0 && post.replyTarget != null
@@ -669,18 +699,14 @@ private fun EngagementBar(
         }
 
         // External share — always textSecondary, offset back to align right edge
-        if (onExternalShareClick != null) {
-            IconButton(
-                onClick = onExternalShareClick,
+        if (onExternalShare != null) {
+            PostShareButton(
+                post = post,
+                onShare = onExternalShare,
+                tint = colors.textSecondary,
+                iconSize = 20.dp,
                 modifier = Modifier.offset(x = 14.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Share,
-                    contentDescription = stringResource(R.string.share),
-                    tint = colors.textSecondary,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+            )
         }
     }
 }
@@ -926,7 +952,8 @@ private fun ReactionEngagementButton(
 fun QuotedPostPreview(
     post: Post,
     onClick: () -> Unit,
-    onProfileClick: (String) -> Unit
+    onProfileClick: (String) -> Unit,
+    onShare: ((String) -> Unit)? = null
 ) {
     val colors = LocalAppColors.current
     val typography = LocalAppTypography.current
@@ -981,14 +1008,22 @@ fun QuotedPostPreview(
         Spacer(modifier = Modifier.height(8.dp))
 
         post.name?.let { title ->
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
+            PostShareSelectionArea(
+                title = post.shareTitle(),
+                url = post.shareUrl(),
+                onShare = onShare,
+            ) {
+                SelectionContainer {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
+            }
         }
 
         val contentWarningText = post.contentWarningText()
@@ -1003,13 +1038,19 @@ fun QuotedPostPreview(
         }
 
         if (contentVisible) {
-            HtmlContent(
-                html = post.content,
-                maxLines = 3,
-                modifier = Modifier.fillMaxWidth(),
-                onMentionClick = onProfileClick,
-                onTextClick = onClick
-            )
+            PostShareSelectionArea(
+                title = post.shareTitle(),
+                url = post.shareUrl(),
+                onShare = onShare,
+            ) {
+                HtmlContent(
+                    html = post.content,
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth(),
+                    onMentionClick = onProfileClick,
+                    onTextClick = onClick
+                )
+            }
 
             if (post.media.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -1357,12 +1398,7 @@ private fun MediaPreviewDialog(
                         text = { Text(stringResource(R.string.share)) },
                         onClick = {
                             showMenu = false
-                            val sendIntent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, url)
-                                type = "text/plain"
-                            }
-                            context.startActivity(Intent.createChooser(sendIntent, null))
+                            context.sharePlainText(url)
                         },
                         leadingIcon = {
                             Icon(
@@ -1424,9 +1460,7 @@ private suspend fun translateHtmlContent(
     html: String,
     targetLanguageTag: String
 ): String = withContext(Dispatchers.IO) {
-    val plainText = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
-        .toString()
-        .trim()
+    val plainText = htmlToPlainText(html)
 
     if (plainText.isBlank()) {
         return@withContext ""

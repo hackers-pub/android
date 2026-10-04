@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Text
 import coil3.compose.AsyncImage
 import androidx.compose.runtime.mutableStateOf
@@ -294,46 +295,107 @@ fun HtmlContent(
     val bodyStyle = scaledBodyStyle.withContentStyle(contentStyle)
     val listStyle = scaledBodyStyle.withListContentStyle(contentStyle)
 
-    if (maxLines < Int.MAX_VALUE) {
-        // Preview mode: flat AnnotatedString (no block code highlighting)
-        val parsedContent = rememberParsedHtml(
-            normalizedHtml,
-            linkColor,
-            hashtagColor,
-            mentionBg,
-            mentionNameColor,
-            codeBg,
-            contentStyle,
-        )
+    // Post text is selectable everywhere it renders. Links, mentions and the
+    // tap-through to the post keep working: HtmlClickableText handles taps and
+    // leaves long presses to the selection container.
+    SelectionContainer {
+        if (maxLines < Int.MAX_VALUE) {
+            // Preview mode: flat AnnotatedString (no block code highlighting)
+            val parsedContent = rememberParsedHtml(
+                normalizedHtml,
+                linkColor,
+                hashtagColor,
+                mentionBg,
+                mentionNameColor,
+                codeBg,
+                contentStyle,
+            )
 
-        HtmlClickableText(
-            parsedContent = parsedContent,
-            style = bodyStyle,
-            maxLines = maxLines,
-            overflow = TextOverflow.Ellipsis,
-            modifier = modifier,
-            uriHandler = uriHandler,
-            onMentionClick = onMentionClick,
-            onLinkClick = onLinkClick,
-            onTextClick = onTextClick,
-        )
-    } else {
-        // Full mode: block-based rendering with syntax-highlighted code blocks
-        val splitHeadings = onHeadingPositioned != null
-        val blocks = remember(normalizedHtml, splitHeadings) {
-            splitIntoBlocks(normalizedHtml, splitHeadings = splitHeadings)
-        }
+            HtmlClickableText(
+                parsedContent = parsedContent,
+                style = bodyStyle,
+                maxLines = maxLines,
+                overflow = TextOverflow.Ellipsis,
+                modifier = modifier,
+                uriHandler = uriHandler,
+                onMentionClick = onMentionClick,
+                onLinkClick = onLinkClick,
+                onTextClick = onTextClick,
+            )
+        } else {
+            // Full mode: block-based rendering with syntax-highlighted code blocks
+            val splitHeadings = onHeadingPositioned != null
+            val blocks = remember(normalizedHtml, splitHeadings) {
+                splitIntoBlocks(normalizedHtml, splitHeadings = splitHeadings)
+            }
 
-        Column(modifier = modifier) {
-            blocks.forEachIndexed { index, block ->
-                if (index > 0) {
-                    Spacer(modifier = Modifier.height(blockSpacing(blocks[index - 1], block)))
-                }
-                when (block) {
-                    is ContentBlock.Text -> {
-                        if (block.html.isNotBlank()) {
-                            val parsedContent = rememberParsedHtml(
-                                block.html,
+            Column(modifier = modifier) {
+                blocks.forEachIndexed { index, block ->
+                    if (index > 0) {
+                        Spacer(modifier = Modifier.height(blockSpacing(blocks[index - 1], block)))
+                    }
+                    when (block) {
+                        is ContentBlock.Text -> {
+                            if (block.html.isNotBlank()) {
+                                val parsedContent = rememberParsedHtml(
+                                    block.html,
+                                    linkColor,
+                                    hashtagColor,
+                                    mentionBg,
+                                    mentionNameColor,
+                                    codeBg,
+                                    contentStyle,
+                                )
+                                if (parsedContent.isNotEmpty()) {
+                                    HtmlClickableText(
+                                        parsedContent = parsedContent,
+                                        style = bodyStyle,
+                                        uriHandler = uriHandler,
+                                        onMentionClick = onMentionClick,
+                                        onLinkClick = onLinkClick,
+                                        onTextClick = onTextClick,
+                                    )
+                                }
+                            }
+                        }
+                        is ContentBlock.List -> {
+                            val parsedList = remember(block.html) { parseListHtml(block.html) }
+                            if (parsedList != null) {
+                                RenderListBlock(
+                                    block = parsedList,
+                                    level = 0,
+                                    textStyle = listStyle,
+                                    linkColor = linkColor,
+                                    hashtagColor = hashtagColor,
+                                    mentionBg = mentionBg,
+                                    mentionNameColor = mentionNameColor,
+                                    codeBg = codeBg,
+                                    contentStyle = contentStyle,
+                                    uriHandler = uriHandler,
+                                    onMentionClick = onMentionClick,
+                                    onLinkClick = onLinkClick,
+                                    onTextClick = onTextClick,
+                                )
+                            }
+                        }
+                        is ContentBlock.Code -> {
+                            CodeBlockView(
+                                codeHtml = block.codeHtml
+                            )
+                        }
+                        is ContentBlock.Image -> {
+                            AsyncImage(
+                                model = block.src,
+                                contentDescription = block.alt,
+                                contentScale = ContentScale.FillWidth,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(AppShapes.mediaRadius))
+                            )
+                        }
+                        is ContentBlock.Heading -> {
+                            val headingContent = rememberParsedHtml(
+                                block.innerHtml,
                                 linkColor,
                                 hashtagColor,
                                 mentionBg,
@@ -341,94 +403,38 @@ fun HtmlContent(
                                 codeBg,
                                 contentStyle,
                             )
-                            if (parsedContent.isNotEmpty()) {
-                                HtmlClickableText(
-                                    parsedContent = parsedContent,
-                                    style = bodyStyle,
-                                    uriHandler = uriHandler,
-                                    onMentionClick = onMentionClick,
-                                    onLinkClick = onLinkClick,
-                                    onTextClick = onTextClick,
+                            val headingStyle = remember(bodyStyle, block.level) {
+                                bodyStyle.copy(
+                                    fontSize = bodyStyle.fontSize * when (block.level) {
+                                        1 -> 1.5f
+                                        2 -> 1.3f
+                                        3 -> 1.15f
+                                        else -> 1.0f
+                                    },
+                                    fontWeight = FontWeight.Bold,
                                 )
                             }
-                        }
-                    }
-                    is ContentBlock.List -> {
-                        val parsedList = remember(block.html) { parseListHtml(block.html) }
-                        if (parsedList != null) {
-                            RenderListBlock(
-                                block = parsedList,
-                                level = 0,
-                                textStyle = listStyle,
-                                linkColor = linkColor,
-                                hashtagColor = hashtagColor,
-                                mentionBg = mentionBg,
-                                mentionNameColor = mentionNameColor,
-                                codeBg = codeBg,
-                                contentStyle = contentStyle,
-                                uriHandler = uriHandler,
-                                onMentionClick = onMentionClick,
-                                onLinkClick = onLinkClick,
-                                onTextClick = onTextClick,
-                            )
-                        }
-                    }
-                    is ContentBlock.Code -> {
-                        CodeBlockView(
-                            codeHtml = block.codeHtml
-                        )
-                    }
-                    is ContentBlock.Image -> {
-                        AsyncImage(
-                            model = block.src,
-                            contentDescription = block.alt,
-                            contentScale = ContentScale.FillWidth,
-                            modifier = Modifier
+                            val anchorId = block.anchorId
+                            val wrapperModifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(AppShapes.mediaRadius))
-                        )
-                    }
-                    is ContentBlock.Heading -> {
-                        val headingContent = rememberParsedHtml(
-                            block.innerHtml,
-                            linkColor,
-                            hashtagColor,
-                            mentionBg,
-                            mentionNameColor,
-                            codeBg,
-                            contentStyle,
-                        )
-                        val headingStyle = remember(bodyStyle, block.level) {
-                            bodyStyle.copy(
-                                fontSize = bodyStyle.fontSize * when (block.level) {
-                                    1 -> 1.5f
-                                    2 -> 1.3f
-                                    3 -> 1.15f
-                                    else -> 1.0f
-                                },
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                        val anchorId = block.anchorId
-                        val wrapperModifier = Modifier
-                            .fillMaxWidth()
-                            .let { base ->
-                                if (anchorId != null && onHeadingPositioned != null) {
-                                    base.onGloballyPositioned { coords ->
-                                        onHeadingPositioned(anchorId, coords)
-                                    }
-                                } else base
-                            }
-                        Box(modifier = wrapperModifier) {
-                            if (headingContent.isNotEmpty()) {
-                                HtmlClickableText(
-                                    parsedContent = headingContent,
-                                    style = headingStyle,
-                                    uriHandler = uriHandler,
-                                    onMentionClick = onMentionClick,
-                                    onLinkClick = onLinkClick,
-                                    onTextClick = onTextClick,
-                                )
+                                .let { base ->
+                                    if (anchorId != null && onHeadingPositioned != null) {
+                                        base.onGloballyPositioned { coords ->
+                                            onHeadingPositioned(anchorId, coords)
+                                        }
+                                    } else base
+                                }
+                            Box(modifier = wrapperModifier) {
+                                if (headingContent.isNotEmpty()) {
+                                    HtmlClickableText(
+                                        parsedContent = headingContent,
+                                        style = headingStyle,
+                                        uriHandler = uriHandler,
+                                        onMentionClick = onMentionClick,
+                                        onLinkClick = onLinkClick,
+                                        onTextClick = onTextClick,
+                                    )
+                                }
                             }
                         }
                     }
@@ -566,10 +572,15 @@ private fun HtmlClickableText(
     BasicText(
         text = parsedContent.text,
         modifier = modifier.pointerInput(parsedContent.text, uriHandler, onMentionClick, onLinkClick, onTextClick) {
-            detectTapGestures { position ->
-                val offset = textLayoutResult?.getOffsetForPosition(position) ?: return@detectTapGestures
-                handleClick(parsedContent.text, offset, uriHandler, onMentionClick, onLinkClick, onTextClick)
-            }
+            detectTapGestures(
+                // A long press starts text selection; claiming it here keeps the
+                // release from also counting as a tap on a link or the post.
+                onLongPress = {},
+                onTap = { position ->
+                    val offset = textLayoutResult?.getOffsetForPosition(position) ?: return@detectTapGestures
+                    handleClick(parsedContent.text, offset, uriHandler, onMentionClick, onLinkClick, onTextClick)
+                },
+            )
         },
         style = style,
         maxLines = maxLines,
@@ -1188,8 +1199,40 @@ internal fun parseHtmlToContent(
                 pos = tagMatch.range.last + 1
             }
         }
-    }.trimTrailingLineBreaks()
+    }.dropParagraphBoundaryBreaks().trimTrailingLineBreaks()
     return ParsedHtmlContent(text = text, inlineImages = inlineImages)
+}
+
+/**
+ * List items are laid out as [ParagraphStyle] ranges, and Compose already starts
+ * a new line at every paragraph boundary. The `\n` the parser writes to separate
+ * an item from what follows therefore renders as an extra blank line — between
+ * items, and before the text after a list. Drop that one newline per paragraph
+ * end: it sits either just inside the range (when a nested list opened before
+ * the parent item was closed) or just after it.
+ */
+private fun AnnotatedString.dropParagraphBoundaryBreaks(): AnnotatedString {
+    val ranges = paragraphStyles
+    if (ranges.isEmpty()) return this
+    val dropped = sortedSetOf<Int>()
+    for (range in ranges) {
+        val end = range.end
+        when {
+            end > range.start && text[end - 1] == '\n' -> dropped += end - 1
+            end < text.length && text[end] == '\n' &&
+                ranges.none { end >= it.start && end < it.end } -> dropped += end
+        }
+    }
+    if (dropped.isEmpty()) return this
+    val source = this
+    return buildAnnotatedString {
+        var cursor = 0
+        dropped.forEach { index ->
+            append(source.subSequence(cursor, index))
+            cursor = index + 1
+        }
+        append(source.subSequence(cursor, source.length))
+    }
 }
 
 private fun AnnotatedString.trimTrailingLineBreaks(): AnnotatedString {

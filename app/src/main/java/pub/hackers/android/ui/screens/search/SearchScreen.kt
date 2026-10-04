@@ -43,7 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import android.content.Intent
 import coil3.compose.AsyncImage
 import pub.hackers.android.R
 import pub.hackers.android.domain.model.Actor
@@ -53,6 +52,7 @@ import pub.hackers.android.ui.components.FullScreenLoading
 import pub.hackers.android.ui.components.LargeTitleHeader
 import pub.hackers.android.ui.components.PostCard
 import pub.hackers.android.ui.components.RichDisplayName
+import pub.hackers.android.ui.share.sharePlainText
 import pub.hackers.android.ui.theme.AppShapes
 import pub.hackers.android.ui.theme.LocalAppColors
 import pub.hackers.android.ui.theme.LocalAppTypography
@@ -216,14 +216,7 @@ fun SearchScreen(
                                                 onReplyClick = onReplyClick,
                                                 onQuoteClick = onQuoteClick,
                                                 onEditClick = onEditClick,
-                                                onExternalShare = { shareUrl ->
-                                                    val sendIntent = Intent().apply {
-                                                        action = Intent.ACTION_SEND
-                                                        putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                                        type = "text/plain"
-                                                    }
-                                                    context.startActivity(Intent.createChooser(sendIntent, null))
-                                                },
+                                                onExternalShare = { context.sharePlainText(it) },
                                                 onVotePoll = viewModel::voteOnPoll
                                             )
                                             HorizontalDivider(
@@ -287,14 +280,7 @@ fun SearchScreen(
                                             onReplyClick = onReplyClick,
                                             onQuoteClick = onQuoteClick,
                                             onEditClick = onEditClick,
-                                            onExternalShare = { shareUrl ->
-                                                val sendIntent = Intent().apply {
-                                                    action = Intent.ACTION_SEND
-                                                    putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                                    type = "text/plain"
-                                                }
-                                                context.startActivity(Intent.createChooser(sendIntent, null))
-                                            },
+                                            onExternalShare = { context.sharePlainText(it) },
                                             onVotePoll = viewModel::voteOnPoll
                                         )
                                         HorizontalDivider(
@@ -467,13 +453,7 @@ private fun SearchPostItem(
         onQuoteClick = { onQuoteClick(post.sharedPost?.id ?: post.id) },
         onEditClick = { onEditClick(it.id) },
         onReactionClick = null,
-        onExternalShareClick = {
-            val displayPost = post.sharedPost ?: post
-            val shareUrl = displayPost.url ?: displayPost.iri
-            if (shareUrl != null) {
-                onExternalShare(shareUrl)
-            }
-        },
+        onExternalShare = onExternalShare,
         onQuotedPostClick = onPostClick,
         onVotePoll = onVotePoll
     )

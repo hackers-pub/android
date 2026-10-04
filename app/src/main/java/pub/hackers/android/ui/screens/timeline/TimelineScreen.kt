@@ -1,6 +1,5 @@
 package pub.hackers.android.ui.screens.timeline
 
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -56,6 +55,7 @@ import pub.hackers.android.ui.components.LanguageFilterRow
 import pub.hackers.android.ui.components.LoadingItem
 import pub.hackers.android.ui.components.PostCard
 import pub.hackers.android.ui.components.ReactionPicker
+import pub.hackers.android.ui.share.sharePlainText
 import pub.hackers.android.ui.theme.LocalAppColors
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -321,20 +321,7 @@ fun TimelineScreen(
                                             viewModel.toggleBookmark(post)
                                         },
                                         onPinClick = { viewModel.togglePin(it) },
-                                        onExternalShareClick = {
-                                            val displayPost = post.sharedPost ?: post
-                                            val shareUrl = displayPost.url ?: displayPost.iri
-                                            if (shareUrl != null) {
-                                                val sendIntent = Intent().apply {
-                                                    action = Intent.ACTION_SEND
-                                                    putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                                    type = "text/plain"
-                                                }
-                                                context.startActivity(
-                                                    Intent.createChooser(sendIntent, null)
-                                                )
-                                            }
-                                        },
+                                        onExternalShare = { context.sharePlainText(it) },
                                         onQuotedPostClick = onPostClick,
                                         onVotePoll = viewModel::voteOnPoll
                                     )
@@ -384,20 +371,7 @@ fun TimelineScreen(
                                             viewModel.toggleBookmark(post)
                                         },
                                         onPinClick = { viewModel.togglePin(it) },
-                                        onExternalShareClick = {
-                                            val displayPost = post.sharedPost ?: post
-                                            val shareUrl = displayPost.url ?: displayPost.iri
-                                            if (shareUrl != null) {
-                                                val sendIntent = Intent().apply {
-                                                    action = Intent.ACTION_SEND
-                                                    putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                                    type = "text/plain"
-                                                }
-                                                context.startActivity(
-                                                    Intent.createChooser(sendIntent, null)
-                                                )
-                                            }
-                                        },
+                                        onExternalShare = { context.sharePlainText(it) },
                                         onQuotedPostClick = onPostClick,
                                         onVotePoll = viewModel::voteOnPoll
                                     )
