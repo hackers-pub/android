@@ -1188,8 +1188,40 @@ internal fun parseHtmlToContent(
                 pos = tagMatch.range.last + 1
             }
         }
-    }.trimTrailingLineBreaks()
+    }.dropParagraphBoundaryBreaks().trimTrailingLineBreaks()
     return ParsedHtmlContent(text = text, inlineImages = inlineImages)
+}
+
+/**
+ * List items are laid out as [ParagraphStyle] ranges, and Compose already starts
+ * a new line at every paragraph boundary. The `\n` the parser writes to separate
+ * an item from what follows therefore renders as an extra blank line — between
+ * items, and before the text after a list. Drop that one newline per paragraph
+ * end: it sits either just inside the range (when a nested list opened before
+ * the parent item was closed) or just after it.
+ */
+private fun AnnotatedString.dropParagraphBoundaryBreaks(): AnnotatedString {
+    val ranges = paragraphStyles
+    if (ranges.isEmpty()) return this
+    val dropped = sortedSetOf<Int>()
+    for (range in ranges) {
+        val end = range.end
+        when {
+            end > range.start && text[end - 1] == '\n' -> dropped += end - 1
+            end < text.length && text[end] == '\n' &&
+                ranges.none { end >= it.start && end < it.end } -> dropped += end
+        }
+    }
+    if (dropped.isEmpty()) return this
+    val source = this
+    return buildAnnotatedString {
+        var cursor = 0
+        dropped.forEach { index ->
+            append(source.subSequence(cursor, index))
+            cursor = index + 1
+        }
+        append(source.subSequence(cursor, source.length))
+    }
 }
 
 private fun AnnotatedString.trimTrailingLineBreaks(): AnnotatedString {

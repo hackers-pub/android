@@ -1,6 +1,7 @@
 package pub.hackers.android.ui.components
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -432,7 +433,7 @@ class HtmlContentKtTest {
     }
 
     @Test
-    fun `parseHtmlToAnnotatedString adds prose spacing between list items`() {
+    fun `parseHtmlToAnnotatedString puts each prose list item in its own paragraph`() {
         val html = "<ul><li>item1</li><li>item2</li></ul>"
         val result = parseHtmlToAnnotatedString(
             html = html,
@@ -442,7 +443,7 @@ class HtmlContentKtTest {
             codeBg = codeBg,
             contentStyle = HtmlContentStyle.Prose,
         )
-        assertTrue(result.text.contains("\u2022 item1\n\u2022 item2"))
+        assertEquals(listOf("\u2022 item1", "\u2022 item2"), result.paragraphTexts())
     }
 
     @Test
@@ -486,7 +487,8 @@ class HtmlContentKtTest {
             codeBg = codeBg,
             contentStyle = HtmlContentStyle.Prose,
         )
-        assertTrue(result.text.contains("before\n\u2022 item1\n\u2022 item2\n\nafter"))
+        assertEquals("before\n\u2022 item1\u2022 item2\nafter", result.text)
+        assertEquals(listOf("\u2022 item1", "\u2022 item2"), result.paragraphTexts())
     }
 
     @Test
@@ -500,7 +502,7 @@ class HtmlContentKtTest {
             codeBg = codeBg,
             contentStyle = HtmlContentStyle.Prose,
         )
-        assertTrue(result.text.contains("\u2022 parent\n\u2022 child\n\u2022 next"))
+        assertEquals(listOf("\u2022 parent", "\u2022 child", "\u2022 next"), result.paragraphTexts())
         assertEquals(3, result.paragraphStyles.size)
     }
 
@@ -515,7 +517,10 @@ class HtmlContentKtTest {
             codeBg = codeBg,
             contentStyle = HtmlContentStyle.Prose,
         )
-        assertTrue(result.text.contains("1. blah\n\u2022 item 1\n2. foobar\n\u2022 item 2"))
+        assertEquals(
+            listOf("1. blah", "\u2022 item 1", "2. foobar", "\u2022 item 2"),
+            result.paragraphTexts(),
+        )
     }
 
     @Test
@@ -529,7 +534,7 @@ class HtmlContentKtTest {
             codeBg = codeBg,
             contentStyle = HtmlContentStyle.Prose,
         )
-        assertEquals("1. item 1\n\u2022 item 1-1\n\u2022 item 1-2", result.text)
+        assertEquals(listOf("1. item 1", "\u2022 item 1-1", "\u2022 item 1-2"), result.paragraphTexts())
     }
 
     @Test
@@ -578,3 +583,8 @@ class HtmlContentKtTest {
 
     // endregion
 }
+
+// Compose separates ParagraphStyle ranges itself, so list items carry no "\n"
+// between them; compare them paragraph by paragraph instead.
+private fun AnnotatedString.paragraphTexts(): List<String> =
+    paragraphStyles.map { text.substring(it.start, it.end) }
