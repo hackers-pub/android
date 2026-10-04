@@ -29,8 +29,8 @@ android {
         applicationId = "pub.hackers.android"
         minSdk = 26
         targetSdk = 36
-        versionCode = 13
-        versionName = "1.7.1"
+        versionCode = 14
+        versionName = "1.8.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
