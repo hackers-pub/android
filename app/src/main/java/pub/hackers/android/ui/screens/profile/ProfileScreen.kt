@@ -1,6 +1,5 @@
 package pub.hackers.android.ui.screens.profile
 
-import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -82,6 +81,7 @@ import pub.hackers.android.ui.components.HtmlContent
 import pub.hackers.android.ui.components.LargeTitleHeader
 import pub.hackers.android.ui.components.LoadingItem
 import pub.hackers.android.ui.components.PostCard
+import pub.hackers.android.ui.share.sharePlainText
 import pub.hackers.android.ui.theme.AppShapes
 import pub.hackers.android.ui.theme.LocalAppColors
 import pub.hackers.android.ui.theme.LocalAppTypography
@@ -180,13 +180,7 @@ fun ProfileScreen(
                             val profileHandle = actor.handle
                             val normalizedHandle =
                                 if (profileHandle.startsWith("@")) profileHandle else "@$profileHandle"
-                            val profileUrl = "https://hackers.pub/$normalizedHandle"
-                            val sendIntent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, profileUrl)
-                                type = "text/plain"
-                            }
-                            context.startActivity(Intent.createChooser(sendIntent, null))
+                            context.sharePlainText("https://hackers.pub/$normalizedHandle")
                         }) {
                             Icon(
                                 imageVector = Icons.Outlined.Share,
@@ -266,22 +260,7 @@ fun ProfileScreen(
                                     onQuoteClick = onQuoteClick,
                                     onEditClick = onEditClick,
                                     onPinClick = { viewModel.togglePin(it) },
-                                    onExternalShareClick = { post ->
-                                        val shareUrl = post.url ?: post.iri
-                                        if (shareUrl != null) {
-                                            val sendIntent = Intent().apply {
-                                                action = Intent.ACTION_SEND
-                                                putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                                type = "text/plain"
-                                            }
-                                            context.startActivity(
-                                                Intent.createChooser(
-                                                    sendIntent,
-                                                    null
-                                                )
-                                            )
-                                        }
-                                    },
+                                    onExternalShare = { context.sharePlainText(it) },
                                     onVotePoll = viewModel::voteOnPoll
                                 )
                             }
@@ -343,23 +322,7 @@ fun ProfileScreen(
                                         onEditClick = { onEditClick(it.id) },
                                         onPinClick = { viewModel.togglePin(it) },
                                         onReactionClick = null,
-                                        onExternalShareClick = {
-                                            val displayPost = post.sharedPost ?: post
-                                            val shareUrl = displayPost.url ?: displayPost.iri
-                                            if (shareUrl != null) {
-                                                val sendIntent = Intent().apply {
-                                                    action = Intent.ACTION_SEND
-                                                    putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                                    type = "text/plain"
-                                                }
-                                                context.startActivity(
-                                                    Intent.createChooser(
-                                                        sendIntent,
-                                                        null
-                                                    )
-                                                )
-                                            }
-                                        },
+                                        onExternalShare = { context.sharePlainText(it) },
                                         onQuotedPostClick = onPostClick,
                                         onVotePoll = viewModel::voteOnPoll
                                     )
@@ -391,7 +354,7 @@ private fun PinnedPostsSection(
     onQuoteClick: (String) -> Unit,
     onEditClick: (String) -> Unit,
     onPinClick: (Post) -> Unit,
-    onExternalShareClick: (Post) -> Unit,
+    onExternalShare: (String) -> Unit,
     onVotePoll: (suspend (questionId: String, optionIndices: List<Int>) -> Result<Poll>)? = null,
 ) {
     val colors = LocalAppColors.current
@@ -429,7 +392,7 @@ private fun PinnedPostsSection(
                 onReactionClick = null,
                 onEditClick = { onEditClick(it.id) },
                 onPinClick = onPinClick,
-                onExternalShareClick = { onExternalShareClick(post.sharedPost ?: post) },
+                onExternalShare = onExternalShare,
                 onQuotedPostClick = onPostClick,
                 onVotePoll = onVotePoll,
             )

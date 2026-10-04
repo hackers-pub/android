@@ -1,6 +1,5 @@
 package pub.hackers.android.ui.screens.bookmarks
 
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,6 +49,7 @@ import pub.hackers.android.ui.components.LargeTitleHeader
 import pub.hackers.android.ui.components.LoadingItem
 import pub.hackers.android.ui.components.PostCard
 import pub.hackers.android.ui.components.ReactionPicker
+import pub.hackers.android.ui.share.sharePlainText
 import pub.hackers.android.ui.theme.LocalAppColors
 import pub.hackers.android.ui.theme.LocalAppTypography
 
@@ -233,18 +233,7 @@ fun BookmarksScreen(
                                             ).show()
                                             viewModel.toggleBookmark(post)
                                         },
-                                        onExternalShareClick = {
-                                            val displayPost = post.sharedPost ?: post
-                                            val shareUrl = displayPost.url ?: displayPost.iri
-                                            if (shareUrl != null) {
-                                                val sendIntent = Intent().apply {
-                                                    action = Intent.ACTION_SEND
-                                                    putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                                    type = "text/plain"
-                                                }
-                                                context.startActivity(Intent.createChooser(sendIntent, null))
-                                            }
-                                        },
+                                        onExternalShare = { context.sharePlainText(it) },
                                         onQuotedPostClick = onPostClick,
                                         onVotePoll = viewModel::voteOnPoll
                                     )
@@ -298,18 +287,7 @@ fun BookmarksScreen(
                                             ).show()
                                             viewModel.toggleBookmark(post)
                                         },
-                                        onExternalShareClick = {
-                                            val displayPost = post.sharedPost ?: post
-                                            val shareUrl = displayPost.url ?: displayPost.iri
-                                            if (shareUrl != null) {
-                                                val sendIntent = Intent().apply {
-                                                    action = Intent.ACTION_SEND
-                                                    putExtra(Intent.EXTRA_TEXT, shareUrl)
-                                                    type = "text/plain"
-                                                }
-                                                context.startActivity(Intent.createChooser(sendIntent, null))
-                                            }
-                                        },
+                                        onExternalShare = { context.sharePlainText(it) },
                                         onQuotedPostClick = onPostClick,
                                         onVotePoll = viewModel::voteOnPoll
                                     )
